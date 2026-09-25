@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questões Estilo ENADE - Paradigma Funcional</title>
+    
+    <!-- Fonte e CSS base similar ao index -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --hover-color: #2980b9;
+            --background: #f4f6f7;
+            --card-bg: #ffffff;
+            --correct-bg: #e8f5e9;
+            --correct-border: #4caf50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .question-card h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .statement {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            list-style-type: upper-alpha;
+            padding-left: 20px;
+            margin-bottom: 25px;
+        }
+
+        .options li {
+            margin-bottom: 12px;
+            line-height: 1.4;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: default;
+        }
+
+        .options li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 20px;
+            padding: 15px 20px;
+            background-color: var(--correct-bg);
+            border-left: 4px solid var(--correct-border);
+            border-radius: 0 8px 8px 0;
+            line-height: 1.5;
+        }
+
+        .explanation strong {
+            color: #2e7d32;
+        }
+
+        .back-link {
+            margin-top: 40px;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+    </style>
+    
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Simulado Estilo ENADE</h1>
+        <p>Teoria da Computação: Paradigma Funcional, Funções Iniciais e Operador de Composição.</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Q1 -->
+        <div class="question-card">
+            <h3>Questão 1</h3>
+            <div class="statement">
+                A Teoria da Computabilidade se desenvolveu na década de 1930 a partir de diferentes modelos que, posteriormente, provaram-se equivalentes (Tese de Church-Turing). Enquanto o modelo da Máquina de Turing influenciou o paradigma de programação imperativa, o modelo de Funções Recursivas proposto por Kleene e Church influenciou a programação funcional. <br><br>
+                Assinale a alternativa que descreve corretamente uma característica do paradigma funcional baseado no modelo de funções matemáticas:
+            </div>
+            <ol class="options">
+                <li>O modelo depende de transições de estado para armazenar resultados intermediários na memória.</li>
+                <li>O modelo não possui conceito de estado mutável (stateless) ou efeito colateral, tratando o processamento estritamente como mapeamento de domínios.</li>
+                <li>As funções recursivas utilizam uma fita infinita simulada para garantir o armazenamento da saída das funções internas.</li>
+                <li>As variáveis mudam de valor progressivamente através de iterações em laços <code>while</code>.</li>
+                <li>O modelo permite a criação de efeitos colaterais caso a aridade das funções não seja respeitada.</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q1')">Mostrar Resposta</button>
+            <div id="q1" class="explanation">
+                <strong>Gabarito: B</strong><br>
+                O paradigma funcional (inspirado no Cálculo Lambda e nas Funções Recursivas) é puramente matemático. Não existem variáveis que "mudam" de valor (estado mutável), não há alocação de memória (fita) no sentido físico, e as funções não provocam efeitos colaterais no sistema, elas apenas recebem entradas e retornam saídas.
+            </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-card">
+            <h3>Questão 2</h3>
+            <div class="statement">
+                No estudo da Computabilidade via Funções Recursivas, aceitamos três funções como "Iniciais" ou axiomáticas. Uma delas é a Função Zero ($Z$). Sobre a função Zero, e considerando o domínio dos números naturais ($\mathbb{N}$), avalie as afirmações e assinale a correta:
+            </div>
+            <ol class="options">
+                <li>Ela é uma função de aridade 2 que zera dois operandos simultaneamente.</li>
+                <li>$Z(x)$ só está definida caso $x = 0$, retornando sempre o próprio $x$.</li>
+                <li>É uma função unária $Z(x) = 0$, que descarta qualquer informação de entrada e ancora a aritmética no valor nulo.</li>
+                <li>A função Zero não pode ser utilizada dentro do operador de composição, servindo apenas como caso base.</li>
+                <li>Sua execução resulta na exclusão de um arquivo no disco, caracterizando efeito colateral.</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q2')">Mostrar Resposta</button>
+            <div id="q2" class="explanation">
+                <strong>Gabarito: C</strong><br>
+                A Função Zero, formalmente $Z(x) = 0$, recebe um único parâmetro natural (aridade 1) e, não importa o valor dele, retorna $0$. Ela atua como um "buraco negro" que oblitera a entrada para iniciar construções lógicas numéricas a partir do absoluto zero, e pode (e deve) ser composta.
+            </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-card">
+            <h3>Questão 3</h3>
+            <div class="statement">
+                A Função Sucessor ($S$) é vital para a Teoria das Funções Recursivas, pois permite a progressão pelo conjunto infinito dos números naturais. Considerando $f(x) = S(x) = x + 1$, julgue as seguintes composições e assinale a saída para $S(S(Z(50)))$:
+            </div>
+            <ol class="options">
+                <li>52</li>
+                <li>50</li>
+                <li>2</li>
+                <li>0</li>
+                <li>Erro de aridade</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q3')">Mostrar Resposta</button>
+            <div id="q3" class="explanation">
+                <strong>Gabarito: C</strong><br>
+                Avaliando de dentro para fora:<br>
+                1. $Z(50) = 0$<br>
+                2. $S(0) = 1$<br>
+                3. $S(1) = 2$.
+            </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-card">
+            <h3>Questão 4</h3>
+            <div class="statement">
+                A função Projeção (ou Identidade) $U_i^n$ tem papel de roteamento de variáveis. O parâmetro superior $n$ denota a aridade (tamanho da tupla), e o $i$ denota a posição do elemento a ser retornado ($1 \le i \le n$).<br><br>
+                Qual é o resultado da avaliação matemática da expressão $U_3^4(10, 20, 30, 40)$?
+            </div>
+            <ol class="options">
+                <li>10</li>
+                <li>20</li>
+                <li>30</li>
+                <li>40</li>
+                <li>100 (a soma da tupla)</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q4')">Mostrar Resposta</button>
+            <div id="q4" class="explanation">
+                <strong>Gabarito: C</strong><br>
+                A notação $U_3^4$ especifica que a função recebe $4$ variáveis e deve devolver estritamente a variável na posição $3$. Na tupla $(10, 20, 30, 40)$, o terceiro elemento é o $30$.
+            </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question-card">
+            <h3>Questão 5</h3>
+            <div class="statement">
+                O Operador de Composição (ou Substituição) funciona encadeando funções, seguindo regras estritas de aridade. Dada a definição de composição $f = C(g; h_1, h_2, \dots, h_k)$, analise as asserções abaixo e a relação proposta entre elas:<br><br>
+                I. O número de funções internas $h$ inseridas na composição precisa ser obrigatoriamente igual a $k$.<br>
+                <strong>PORQUE</strong><br>
+                II. A função externa $g$ possui aridade (número de entradas) exatamente igual a $k$, e portanto cada função $h$ fornecerá exatamente um valor para $g$.<br><br>
+                Acerca destas asserções, é correto afirmar que:
+            </div>
+            <ol class="options">
+                <li>As asserções I e II são proposições falsas.</li>
+                <li>A asserção I é proposição falsa, e a II é proposição verdadeira.</li>
+                <li>As asserções I e II são verdadeiras, mas a II não é uma justificativa correta da I.</li>
+                <li>A asserção I é proposição verdadeira, e a II é proposição falsa.</li>
+                <li>As asserções I e II são proposições verdadeiras, e a II é uma justificativa correta da I.</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q5')">Mostrar Resposta</button>
+            <div id="q5" class="explanation">
+                <strong>Gabarito: E</strong><br>
+                A regra primária da Composição é a adequação de aridade. Se $g$ demanda $k$ parâmetros, você é matematicamente forçado a criar $k$ funções internas no escopo do operador para gerar exatamente os $k$ números necessários.
+            </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question-card">
+            <h3>Questão 6</h3>
+            <div class="statement">
+                Seja a notação de composição $f = C(g; h_1, h_2)$, onde:
+                <ul>
+                    <li>$g(a, b) = a + b$</li>
+                    <li>$h_1(x) = S(x)$</li>
+                    <li>$h_2(x) = Z(x)$</li>
+                </ul>
+                Se calcularmos a função $f(9)$, qual será o seu resultado e como ele foi logicamente obtido?
+            </div>
+            <ol class="options">
+                <li>O resultado é 10. $h_1(9)=10$ e $h_2(9)=0$. Então $g(10, 0) = 10$.</li>
+                <li>O resultado é 9. $h_1(9)=9$ e $h_2(9)=0$.</li>
+                <li>O resultado é 1. $g(9)$ é calculado primeiro, dando erro de aridade, logo a função recai para $Z$.</li>
+                <li>O resultado é 19. $h_1$ soma 9 com $h_2(9)$.</li>
+                <li>A composição falha, pois $g$ não é uma função válida.</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q6')">Mostrar Resposta</button>
+            <div id="q6" class="explanation">
+                <strong>Gabarito: A</strong><br>
+                Na composição, a entrada 9 é passada de forma paralela para $h_1$ e $h_2$. <br>
+                - $h_1(9) = S(9) = 10$<br>
+                - $h_2(9) = Z(9) = 0$<br>
+                A tupla resultante $(10, 0)$ é injetada em $g$. Como $g(a,b) = a+b$, temos $g(10, 0) = 10+0 = 10$.
+            </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-card">
+            <h3>Questão 7</h3>
+            <div class="statement">
+                Um aluno quer demonstrar que a função constante de valor Um, $f(x) = 1$, é computável utilizando exclusivamente as funções iniciais e a Composição.<br>
+                Das formalizações matemáticas abaixo, qual define corretamente a construção de $f(x) = 1$?
+            </div>
+            <ol class="options">
+                <li>$f = C(Z; S)$</li>
+                <li>$f = C(S; Z)$</li>
+                <li>$f = C(U_1^1; S)$</li>
+                <li>$f = C(S; S)$</li>
+                <li>$f = Z(S(x))$</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q7')">Mostrar Resposta</button>
+            <div id="q7" class="explanation">
+                <strong>Gabarito: B</strong><br>
+                Para resultar sempre em $1$, precisamos primeiro destruir o valor de $x$ transformando-o em $0$ através da função $Z$. Em seguida, aplicamos o sucessor sobre esse zero: $S(0) = 1$.<br>
+                Assim, a função que roda primeiro (interna) é o $Z$, e a externa é o $S$. A notação de composição externa primeiro fica $C(S; Z)$. (Equivalente a $S(Z(x))$).
+            </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="question-card">
+            <h3>Questão 8</h3>
+            <div class="statement">
+                Para formularmos a função $f(x) = x + 2$ sob o paradigma da Teoria da Computação, precisamos aplicar o operador $S$ sucessivamente em cima da entrada $x$. No entanto, uma função interna tem que lidar com essa entrada formalmente antes.<br><br>
+                A formalização correta dessa função, utilizando a função $U_1^1$ para capturar $x$, é expressa por:
+            </div>
+            <ol class="options">
+                <li>$f = C(S; Z; U_1^1)$</li>
+                <li>$f = C(S; U_1^1; U_1^1)$</li>
+                <li>$f = C(S; C(S; U_1^1))$</li>
+                <li>$f = C(S; C(Z; U_1^1))$</li>
+                <li>$f = S + S(U_1^1)$</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q8')">Mostrar Resposta</button>
+            <div id="q8" class="explanation">
+                <strong>Gabarito: C</strong><br>
+                Como $S$ só aceita $1$ entrada (aridade unária), devemos encadear Composições sucessivas. O caso mais profundo capta o $x$ com $U_1^1$. A primeira composição $C(S; U_1^1)$ eleva para $x+1$. A segunda composição aplica o $S$ novamente no resultado da anterior: $C(S; C(S; U_1^1))$, elevando para $x+2$.
+            </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="question-card">
+            <h3>Questão 9</h3>
+            <div class="statement">
+                Em problemas de cômputo matemático, frequentemente necessitamos "clonar" ou "replicar" um parâmetro numérico. Considere que você possui a função externa $g(x_1, x_2)$, que exige dois parâmetros. Queremos criar $h(x) = g(x, x)$.<br>
+                Qual artifício de Funções Iniciais permite passar o MESMO $x$ para as duas entradas requeridas por $g$?
+            </div>
+            <ol class="options">
+                <li>O uso da Função Zero, pois ela nivela as variáveis, $Z(x)$.</li>
+                <li>O uso da Função Sucessor repetida, pois ela avança as duas variáveis sincronizadamente.</li>
+                <li>O uso da função Projeção de Identidade, aplicada duas vezes como funções internas do operador: $C(g; U_1^1, U_1^1)$.</li>
+                <li>Uma iteração em <code>for</code> acoplada ao Operador de Composição.</li>
+                <li>É impossível clonar parâmetros sob a Teoria de Funções Recursivas puras.</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q9')">Mostrar Resposta</button>
+            <div id="q9" class="explanation">
+                <strong>Gabarito: C</strong><br>
+                Como $g$ exige $2$ funções internas ($h_1$ e $h_2$) e $h(x)$ dispõe apenas do parâmetro $x$, precisamos que ambas as funções internas capturem esse $x$ sem alterá-lo. A função encarregada de extrair um valor sem alterá-lo é a Projeção $U$. Neste caso, $U_1^1(x)$ é utilizado como $h_1$ e $h_2$.
+            </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="question-card">
+            <h3>Questão 10</h3>
+            <div class="statement">
+                Ao longo de sua formalização matemática, fica evidente que o Operador de Composição sozinho, acoplado com $Z, S$ e $U$, apresenta um limite teórico grave, sendo incapaz de provar, por exemplo, a operação da <strong>Adição genérica</strong> $add(x, y) = x + y$.<br><br>
+                Assinale a alternativa que explica de maneira tecnicamente correta o porquê desta falha:
+            </div>
+            <ol class="options">
+                <li>A Adição exigiria o uso de números negativos, o que fere o domínio restrito dos Naturais $\mathbb{N}$.</li>
+                <li>A função Sucessor só pode ser chamada até o limite de memória do hardware teórico, de forma que adicionar $y$ poderia transbordar a memória (Stack Overflow).</li>
+                <li>As composições são estruturas estáticas. Para calcular $x + y$, seria necessário aninhar a função Sucessor exatas $y$ vezes. Como $y$ é uma variável, a composição não consegue crescer dinamicamente para se adaptar.</li>
+                <li>A Composição não possui meios matemáticos para projetar duas variáveis independentes.</li>
+                <li>A aridade da função Sucessor exigiria pelo menos três parâmetros para fazer um laço de repetição.</li>
+            </ol>
+            <button class="btn" onclick="toggleAnswer('q10')">Mostrar Resposta</button>
+            <div id="q10" class="explanation">
+                <strong>Gabarito: C</strong><br>
+                A fórmula de composição é rígida/fixa. Para resolver $x + 2$, nós criamos uma fórmula com dois "S" encadeados ($S(S(\dots))$). Para resolver $x + y$, não há como desenhar os encadeamentos sem saber previamente qual será o valor da variável $y$. Este limite estático evidencia a necessidade do Operador de Recursão Primitiva.
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← Voltar para a Página Inicial</a>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

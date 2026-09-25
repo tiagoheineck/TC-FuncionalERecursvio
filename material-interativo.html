@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradigma Funcional I - Aula 14</title>
+    
+    <!-- Configuração do MathJax para renderizar fórmulas matemáticas em LaTeX -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-border: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 250px;
+            background: white;
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--light-border);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            margin-bottom: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2rem;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Cards and Interactive Elements */
+        .card {
+            background: #fff;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .interactive-box {
+            background: #eef2f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .theory-box {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff9800;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        th {
+            background-color: #f4f6f7;
+            color: var(--primary-color);
+        }
+
+        /* Math and Code Blocks */
+        pre {
+            background: #2d2d2d;
+            color: #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+
+        .gabarito {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            nav {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--light-border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="section-timer" style="position: fixed; top: 20px; right: 20px; background-color: var(--primary-color); color: white; padding: 10px 20px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; display: none; transition: background-color 0.3s;">
+        ⏱️ <span id="timer-current">00:00</span> / <span id="timer-total">10:00</span>
+    </div>
+
+    <header>
+        <h1>Paradigma Funcional I</h1>
+        <p>Fundamentos, Funções Iniciais e o Operador de Composição</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-target="cronograma">Cronograma</a></li>
+                <li><a href="#" data-target="contextualizacao">Contextualização</a></li>
+                <li><a href="#" data-target="glossario">Glossário de Termos</a></li>
+                <li><a href="#" data-target="funcoes-basicas">Funções Básicas (Iniciais)</a></li>
+                <li><a href="#" data-target="composicao">Operador de Composição</a></li>
+                <li><a href="#" data-target="exemplos">Exemplos Resolvidos</a></li>
+                <li><a href="#" data-target="atividade">Atividade Prática</a></li>
+                <li><a href="#" data-target="fechamento">Fechamento</a></li>
+                <li><a href="#" data-target="referencias">Referências Bibliográficas</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Cronograma -->
+            <section id="cronograma" class="active">
+                <h2>⏱️ Cronograma da Aula (100 min)</h2>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tempo</th>
+                                <th>Etapa</th>
+                                <th>Foco Pedagógico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>10 min</strong></td>
+                                <td>Contextualização & Quebra de Paradigma</td>
+                                <td>Comparar o modelo mecanicista (MT/Norma) com o modelo funcional de Gödel/Kleene.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>25 min</strong></td>
+                                <td>As Três Funções Iniciais (Básicas)</td>
+                                <td>Formalização matemática e equivalência com primitivas de programação.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>25 min</strong></td>
+                                <td>O Operador de Composição (Substituição)</td>
+                                <td>Definição formal de $C(g; h_1, \dots, h_k)$ e regras de aridade.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>20 min</strong></td>
+                                <td>Exemplos Resolvidos no Quadro</td>
+                                <td>Construção passo a passo de funções constantes e manipulação de parâmetros, com rigor formal.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>15 min</strong></td>
+                                <td>Atividade Prática em Sala (Duplas)</td>
+                                <td>Exercícios curtos de fixação para garantir que entenderam a formalização.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>05 min</strong></td>
+                                <td>Fechamento e Gancho para Próxima Aula</td>
+                                <td>Antecipar a necessidade da Recursão Primitiva.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Contextualização -->
+            <section id="contextualizacao">
+                <h2>1. Contextualização: A Mudança de Paradigma</h2>
+                <div class="card">
+                    <h3>O modelo Mecanicista vs Modelo Funcional</h3>
+                    
+                    <div class="theory-box">
+                        <strong>Fundamento Teórico:</strong> Até o momento, o estudo da computabilidade baseou-se fortemente em modelos como a Máquina de Turing e as Máquinas de Post/Norma. Estes modelos são imperativos e centrados no <em>estado</em>: a computação avança alterando símbolos em uma fita ou somando/subtraindo registradores através de instruções passo a passo. 
+                        <br><br>
+                        Historicamente, na mesma época em que Alan Turing desenvolvia sua máquina (1936), matemáticos como Kurt Gödel, Alonzo Church e Stephen Kleene trabalhavam em abordagens puramente matemáticas e algébricas para responder à mesma pergunta: "O que é computável?". O Paradigma Funcional (ou Aritmético) nasce desse esforço, notadamente através do Cálculo Lambda e da <strong>Teoria das Funções Recursivas</strong>.
+                    </div>
+
+                    <ul>
+                        <li><strong>Modelo Operacional/Mecanicista:</strong> Computação = Estados + Memória + Instruções de transição. (Foco em <em>COMO</em> o algoritmo muda o sistema).</li>
+                        <li><strong>Modelo Funcional/Aritmético:</strong> Computação = <strong>Avaliação e redução de expressões matemáticas.</strong> (Foco no mapeamento do que entra para o que sai).</li>
+                        <li>O domínio de estudo é <strong>exclusivamente</strong> os números naturais ($\mathbb{N} = \{0, 1, 2, 3, \dots\}$). Não há números negativos ou reais diretamente.</li>
+                        <li>Trabalharemos com funções matematicamente <strong>totais</strong>: $f: \mathbb{N}^k \to \mathbb{N}$, o que significa que para cada tupla de entrada haverá sempre uma saída no domínio dos Naturais.</li>
+                    </ul>
+                    <div class="interactive-box">
+                        <strong>💡 Ponte com a Prática e Mercado:</strong> É a base teórica da <strong>Programação Funcional Pura</strong>. Linguagens modernas (como Haskell, Clojure, e recursos avançados em JavaScript e Python) usam esses conceitos para criar programas seguros, onde <em>não há estado mutável (variáveis que mudam de valor) nem efeitos colaterais</em>. A saída de uma função depende estritamente das suas entradas, facilitando o processamento paralelo e testes.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Glossário -->
+            <section id="glossario">
+                <h2>📖 Glossário de Termos</h2>
+                <div class="card">
+                    <p>Antes de mergulharmos nas formalizações matemáticas, vamos alinhar alguns conceitos fundamentais que serão a base de todo o nosso estudo sobre Funções Recursivas:</p>
+                    
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 15px;">
+                            <strong>🔹 Aridade:</strong> 
+                            Refere-se à quantidade de parâmetros (ou entradas) que uma função requer para ser executada. Por exemplo, uma função $f(x)$ possui aridade 1 (unária), enquanto $g(x, y)$ tem aridade 2 (binária). Em Teoria da Computação, aridade dita as regras de como podemos combinar funções.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>🔹 Funções Atômicas:</strong> 
+                            São funções "indivisíveis". Assim como os átomos eram considerados os blocos fundamentais da matéria, as funções atômicas são os blocos fundamentais da computabilidade. Elas fazem apenas uma operação extremamente simples.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>🔹 Funções Primitivas / Iniciais:</strong> 
+                            São o ponto de partida do nosso sistema formal. São funções que assumimos como computáveis <em>a priori</em>, sem a necessidade de demonstrarmos como elas foram construídas a partir de outras (pois não há nada "abaixo" delas).
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>🔹 Axioma:</strong> 
+                            É uma premissa ou verdade incontestável, tão evidente que não precisa de prova. Toda a matemática e a computabilidade funcionam a partir de um conjunto mínimo de axiomas a partir dos quais tudo o mais é provado ou construído.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>🔹 Tupla:</strong> 
+                            É uma sequência ordenada e finita de valores, como $(x_1, x_2, \dots, x_n)$. Em nosso estudo, toda entrada de função de múltiplas variáveis é interpretada como uma única tupla de aridade $n$.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Funções Básicas -->
+            <section id="funcoes-basicas">
+                <h2>2. As Três Funções Básicas (Iniciais)</h2>
+                <div class="theory-box">
+                    <strong>Axiomatização da Computabilidade:</strong> Assim como a geometria de Euclides se baseia em alguns poucos axiomas incontestáveis, a teoria das funções computáveis assume que qualquer algoritmo do mundo pode ser construído combinando apenas três funções atômicas e primitivas. Não precisamos de hardware, fita ou instruções complexas; precisamos apenas da noção de Zero, da capacidade de Contar (Sucessor) e de Escolher um valor (Projeção).
+                </div>
+                
+                <div class="card">
+                    <h3>A. Função Zero ($Z$)</h3>
+                    <p><strong>Teoria:</strong> A função Zero é responsável por ancorar a aritmética. Ela "zera" ou destrói qualquer informação de entrada, devolvendo sempre o axioma base dos números naturais: o zero. Formalmente, é uma função unária (aridade 1).</p>
+                    <p><strong>Definição Formal:</strong> $Z(x) = 0$, para todo $x \in \mathbb{N}$.</p>
+                    <div class="interactive-box">
+                        <label>Teste a Função $Z(x)$:</label><br><br>
+                        Entrada x = <input type="number" id="inputZ" value="42" min="0">
+                        <button onclick="calcZ()">Avaliar Z(x)</button>
+                        <div id="resultZ" class="result"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>B. Função Sucessor ($S$)</h3>
+                    <p><strong>Teoria:</strong> O sucessor é o "motor" da computação aritmética. Ele é a única maneira de gerarmos números maiores que zero. Se o zero é o ponto de partida, o sucessor representa o ato de dar um passo adiante, formalizando o conceito de contagem. Na matemática dos Axiomas de Peano, é o que garante que os números naturais são infinitos.</p>
+                    <p><strong>Definição Formal:</strong> $S(x) = x + 1$, para todo $x \in \mathbb{N}$.</p>
+                    <div class="interactive-box">
+                        <label>Teste a Função $S(x)$:</label><br><br>
+                        Entrada x = <input type="number" id="inputS" value="5" min="0">
+                        <button onclick="calcS()">Avaliar S(x)</button>
+                        <div id="resultS" class="result"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>C. Funções Projeção / Identidade ($U_i^n$)</h3>
+                    <p><strong>Teoria:</strong> Quando temos múltiplas variáveis (uma tupla de tamanho $n$), precisamos de uma forma matemática de "ignorar" o que não importa e selecionar apenas o parâmetro relevante para um certo passo do cálculo. A função projeção atua como um seletor ou roteador de variáveis. O termo "identidade" é usado pois, se $n=1$ e $i=1$ ($U_1^1$), a função devolve exatamente a única entrada que recebeu.</p>
+                    <p><strong>Definição Formal:</strong> $U_i^n(x_1, x_2, \dots, x_n) = x_i$, onde $n$ é a quantidade total de argumentos (aridade) e $i$ é a posição do argumento a ser retornado ($1 \le i \le n$).</p>
+                    <div class="interactive-box">
+                        <label>Teste a Função $U_i^3(x_1, x_2, x_3)$:</label> <br>
+                        <small>Atenção: Sobrescrito ($n=3$) é a aridade. Subscrito ($i$) é a posição.</small><br><br>
+                        Entradas: 
+                        <input type="number" id="projX1" placeholder="x1" style="width: 60px;"> 
+                        <input type="number" id="projX2" placeholder="x2" style="width: 60px;"> 
+                        <input type="number" id="projX3" placeholder="x3" style="width: 60px;"><br><br>
+                        Projetar i = <input type="number" id="projI" value="2" min="1" max="3" style="width: 50px;">
+                        <button onclick="calcU()">Avaliar U</button>
+                        <div id="resultU" class="result"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Composição -->
+            <section id="composicao">
+                <h2>3. Operador de Composição (Substituição)</h2>
+                <div class="theory-box">
+                    <strong>Por que precisamos de Operadores?</strong>
+                    Apenas com $Z$, $S$ e $U$ não conseguimos fazer cálculos avançados. Precisamos de "colas" lógicas, regras de inferência que permitam pegar funções simples e encaixá-las para criar funções mais complexas. O <strong>Operador de Composição</strong> é o primeiro desses mecanismos. Ele equivale à chamada de subrotinas na programação, onde a saída de uma ou mais funções serve diretamente como entrada para outra função.
+                </div>
+                
+                <div class="card">
+                    <h3>Definição Matemática Rigorosa</h3>
+                    <p>Para realizarmos uma composição válida, precisamos respeitar estritamente a "tipagem" das funções (suas aridades). Se a função externa $g$ espera $k$ argumentos, devemos fornecer exatamente $k$ funções internas $h_1, \dots, h_k$ para alimentá-la. E, para que o sistema inteiro funcione harmonicamente como uma única nova função, todas as funções internas $h$ devem aceitar a mesma quantidade de argumentos $m$.</p>
+                    
+                    <p>Seja $g$ uma função de aridade $k$ ($g: \mathbb{N}^k \to \mathbb{N}$) e sejam $h_1, h_2, \dots, h_k$ funções, todas de aridade $m$ ($h_j: \mathbb{N}^m \to \mathbb{N}$).</p>
+                    
+                    <p>A <strong>composição</strong> de $g$ com $h_1, \dots, h_k$ gera uma nova função $f$ de aridade $m$, denotada formalmente por $f = C(g; h_1, \dots, h_k)$. Sua execução se dá da seguinte forma:</p>
+                    
+                    $$f(x_1, \dots, x_m) = g\Big( h_1(x_1, \dots, x_m), h_2(x_1, \dots, x_m), \dots, h_k(x_1, \dots, x_m) \Big)$$
+
+                    <p><strong>Ordem de Avaliação:</strong> Do ponto de vista computacional, ao chamarmos $f(x_1, \dots, x_m)$, as funções $h$ são avaliadas <em>primeiro</em>, em paralelo. Os $k$ resultados gerados por elas formam uma tupla, que é então injetada de uma só vez na função externa $g$, que processa a saída final.</p>
+
+                </div>
+            </section>
+
+            <!-- Exemplos -->
+            <section id="exemplos">
+                <h2>✏️ Exemplos Resolvidos Passo a Passo</h2>
+                <div class="theory-box">
+                    Nesta seção, o rigor é fundamental. Para provar que uma função é computável neste paradigma, não basta escrever a expressão; deve-se mostrar como ela se constrói estritamente a partir do Operador de Composição $C(\dots)$ e das funções iniciais $Z$, $S$ e $U$.
+                </div>
+                
+                <div class="card">
+                    <h3>Exemplo 1: Função Constante Um ($f(x) = 1$)</h3>
+                    <p><strong>Análise do Problema:</strong> Precisamos de uma função que receba qualquer valor e sempre devolva 1. A única função capaz de zerar um valor arbitrário é a $Z$. A única capaz de aumentar para 1 é a $S$. Logo, precisamos que a saída de $Z$ seja a entrada de $S$.</p>
+                    
+                    <p><strong>Desenvolvimento Lógico:</strong></p>
+                    <ol>
+                        <li>Para qualquer $x$, obtemos o zero: $Z(x) = 0$</li>
+                        <li>Pegamos esse resultado e aplicamos o sucessor: $S(Z(x)) = S(0) = 1$</li>
+                    </ol>
+                    
+                    <p><strong>Prova de Formalização (Aridades):</strong></p>
+                    <ul>
+                        <li>A função externa é $S$, que possui aridade $k=1$. Logo, o operador de composição precisa de 1 função interna.</li>
+                        <li>A função interna é $Z$, que possui aridade $m=1$.</li>
+                        <li>Portanto, a composição é válida e gera uma nova função $f$ de aridade 1.</li>
+                    </ul>
+                    <p><strong>Notação Final:</strong></p>
+                    $$f = C(S; Z)$$
+                </div>
+
+                <div class="card">
+                    <h3>Exemplo 2: Função Constante Dois de Duas Variáveis ($f(x_1, x_2) = 2$)</h3>
+                    <p><strong>Análise do Problema:</strong> O desafio aqui não é apenas chegar ao número 2 (que é sucessor do sucessor do zero), mas também como tratar o fato de que a função recebe <em>duas</em> entradas. As funções $Z$ e $S$ são unárias (aridade 1), então não podemos simplesmente jogar $(x_1, x_2)$ dentro do $Z$ diretamente. Primeiro, precisamos usar uma Projeção para descartar uma das variáveis e entregar apenas uma variável para o resto da esteira.</p>
+                    
+                    <p><strong>Desenvolvimento Lógico (Passo a passo):</strong></p>
+                    <ol>
+                        <li><strong>Passo 1 (Projetar):</strong> Escolhemos a primeira variável para seguir em frente. Usamos a projeção $U_1^2(x_1, x_2) = x_1$.</li>
+                        <li><strong>Passo 2 (Zerar):</strong> Agora que temos apenas um valor, injetamos na função Zero. O resultado dessa etapa chamaremos de função auxiliar $h_1$:<br>
+                        $h_1(x_1, x_2) = Z( U_1^2(x_1, x_2) )$.<br> Formalmente: $h_1 = C(Z; U_1^2)$. Esta parte sempre resulta em 0.</li>
+                        <li><strong>Passo 3 (Primeiro Sucessor):</strong> Aplicamos o sucessor em $h_1$ para chegar a 1. Chamaremos de $h_2$:<br>
+                        $h_2(x_1, x_2) = S( h_1(x_1, x_2) )$.<br> Formalmente: $h_2 = C(S; h_1)$.</li>
+                        <li><strong>Passo 4 (Segundo Sucessor):</strong> Aplicamos o sucessor novamente para chegar ao 2:<br>
+                        $f(x_1, x_2) = S( h_2(x_1, x_2) )$.<br> Formalmente: $f = C(S; h_2)$.</li>
+                    </ol>
+                    
+                    <p><strong>Notação Final Completa (Embutida):</strong></p>
+                    $$f = C(S; C(S; C(Z; U_1^2)))$$
+                </div>
+
+                <div class="card">
+                    <h3>Exemplo 3: Inversão ou Troca de Argumentos</h3>
+                    <p><strong>Análise do Problema:</strong> Imagine que temos uma função existente $g(x_1, x_2)$, por exemplo, de divisão, onde a ordem importa. Queremos construir uma nova função $f(x_1, x_2)$ que, ao ser chamada, repasse os argumentos para $g$, mas na ordem trocada: $g(x_2, x_1)$. </p>
+                    
+                    <p><strong>Desenvolvimento Lógico:</strong></p>
+                    <p>Para alimentar a função externa $g$ que possui aridade $k=2$, o operador de composição nos obriga a prover duas funções internas ($h_1$ e $h_2$). O papel dessas funções será extrair especificamente o dado que queremos para a posição desejada:</p>
+                    <ul>
+                        <li>Para a posição 1 de $g$, queremos o argumento 2 da entrada. Logo, $h_1 = U_2^2(x_1, x_2)$.</li>
+                        <li>Para a posição 2 de $g$, queremos o argumento 1 da entrada. Logo, $h_2 = U_1^2(x_1, x_2)$.</li>
+                    </ul>
+                    
+                    <p>Montando a expressão da composição completa, temos: <br>$$f(x_1, x_2) = g( U_2^2(x_1, x_2), U_1^2(x_1, x_2) )$$</p>
+                    <p><strong>Notação Final:</strong></p>
+                    $$f = C(g; U_2^2, U_1^2)$$
+                </div>
+            </section>
+
+            <!-- Atividade -->
+            <section id="atividade">
+                <h2>📝 Atividade Prática em Sala (Duplas)</h2>
+                <p>O desafio agora é que os alunos apliquem o mesmo rigor lógico dos exemplos anteriores. Para cada exercício, escreva a função final e a notação formal de composição equivalente.</p>
+                
+                <div class="card">
+                    <h3>Exercício A</h3>
+                    <p>Construa formalmente a função $f(x_1, x_2, x_3) = x_2 + 1$ usando apenas as Funções Iniciais e o operador de Composição.</p>
+                    <button onclick="toggleGabarito('gabA')">Ver Gabarito A</button>
+                    <div id="gabA" class="gabarito">
+                        <strong>Raciocínio Teórico:</strong><br>
+                        Temos uma entrada de 3 variáveis. O resultado depende apenas do incremento da segunda variável. <br>
+                        1. A função externa deve ser o sucessor ($S$), que precisa de 1 entrada.<br>
+                        2. A função interna deve capturar o 2º elemento de uma tupla de 3. Essa é a projeção $U_2^3$.<br><br>
+                        <strong>Equação:</strong> $$f(x_1, x_2, x_3) = S(U_2^3(x_1, x_2, x_3))$$<br>
+                        <strong>Formalização:</strong> $$f = C(S; U_2^3)$$
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Exercício B</h3>
+                    <p>Supondo que você tem uma função pronta $g(x_1, x_2)$ que espera duas variáveis. Escreva a formalização matemática de uma nova função $h(x)$ que recebe apenas UMA variável e a repassa duplicada para $g$, ou seja, $h(x) = g(x, x)$.</p>
+                    <button onclick="toggleGabarito('gabB')">Ver Gabarito B</button>
+                    <div id="gabB" class="gabarito">
+                        <strong>Raciocínio Teórico:</strong><br>
+                        Este é um exercício clássico de adequação de aridade (clonagem de parâmetros). <br>
+                        A função $h$ recebe 1 variável, logo suas funções internas terão aridade 1. A função externa $g$ precisa de 2 variáveis, logo precisamos prover duas funções internas no operador de Composição. Como queremos passar o "$x$" para ambas as posições, usamos a identidade $U_1^1$ duas vezes.<br><br>
+                        <strong>Equação:</strong> $$h(x) = g(U_1^1(x), U_1^1(x))$$<br>
+                        <strong>Formalização:</strong> $$h = C(g; U_1^1, U_1^1)$$
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fechamento -->
+            <section id="fechamento">
+                <h2>🎯 Fechamento da Aula</h2>
+                <div class="card" style="background-color: #fff3e0; border-left: 5px solid #ff9800;">
+                    <h3>O Limite da Composição - Provocação para a próxima aula:</h3>
+                    <p style="font-size: 1.2rem; font-style: italic;">
+                        "Com a Composição e as Funções Básicas, conseguimos zerar, incrementar, reordenar, clonar e ignorar parâmetros. Mas pensem: como construiríamos a operação matemática de Adição <strong>$add(x, y) = x + y$</strong> usando APENAS essas ferramentas?"
+                    </p>
+                    <p>
+                        <strong>Reflexão Teórica:</strong> Tentar fazer $add(x, y)$ apenas com sucessores e composição exigiria que soubéssemos antecipadamente quantas vezes aplicar o "$S$" baseado no valor de "$y$". Porém, a composição avalia funções de forma estática e fixa. A composição pura <strong>não é suficiente</strong> para expressar iterações, condicionais ou laços de repetição flexíveis. 
+                    </p>
+                    <p>
+                        É precisamente para romper essa limitação matemática que, no <strong>Encontro 15</strong>, introduziremos o segundo grande operador: a <strong>Recursão Primitiva</strong>, o equivalente teórico aos laços de repetição <code>for</code>.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Referências -->
+            <section id="referencias">
+                <h2>📚 Referências Bibliográficas</h2>
+                <div class="card">
+                    <ul>
+                        <li style="margin-bottom: 10px;"><strong>SIPSER, Michael.</strong> <em>Introdução à Teoria da Computação.</em> 2ª ed. São Paulo: Cengage Learning, 2007.</li>
+                        <li style="margin-bottom: 10px;"><strong>DIVERIO, Tiarajú Asmuz; MENEZES, Paulo Blauth.</strong> <em>Teoria da Computação: Máquinas Universais e Computabilidade.</em> 3ª ed. Porto Alegre: Bookman, 2011.</li>
+                        <li style="margin-bottom: 10px;"><strong>LEWIS, Harry R.; PAPADIMITRIOU, Christos H.</strong> <em>Elementos de Teoria da Computação.</em> 2ª ed. Porto Alegre: Bookman, 2000.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Timer Variables
+        const sectionTimes = {
+            'cronograma': 0,
+            'contextualizacao': 10,
+            'glossario': 5,
+            'funcoes-basicas': 25,
+            'composicao': 25,
+            'exemplos': 20,
+            'atividade': 15,
+            'fechamento': 5,
+            'referencias': 0
+        };
+
+        let timerInterval;
+        let secondsElapsed = 0;
+        let currentSectionTotalSeconds = 0;
+
+        function updateTimerDisplay() {
+            if (currentSectionTotalSeconds === 0) {
+                document.getElementById('section-timer').style.display = 'none';
+                return;
+            }
+            document.getElementById('section-timer').style.display = 'block';
+            
+            let mElapsed = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            let sElapsed = (secondsElapsed % 60).toString().padStart(2, '0');
+            
+            let mTotal = Math.floor(currentSectionTotalSeconds / 60).toString().padStart(2, '0');
+            let sTotal = (currentSectionTotalSeconds % 60).toString().padStart(2, '0');
+            
+            document.getElementById('timer-current').innerText = `${mElapsed}:${sElapsed}`;
+            document.getElementById('timer-total').innerText = `${mTotal}:${sTotal}`;
+            
+            if (secondsElapsed >= currentSectionTotalSeconds) {
+                document.getElementById('section-timer').style.backgroundColor = '#e74c3c'; // Vermelho se o tempo estourar
+            } else {
+                document.getElementById('section-timer').style.backgroundColor = 'var(--primary-color)';
+            }
+        }
+
+        // Navigation Logic
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and sections
+                document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+
+                // Timer Logic
+                clearInterval(timerInterval);
+                secondsElapsed = 0;
+                let minutes = sectionTimes[targetId] || 0;
+                currentSectionTotalSeconds = minutes * 60;
+                
+                updateTimerDisplay();
+                if (currentSectionTotalSeconds > 0) {
+                    timerInterval = setInterval(() => {
+                        secondsElapsed++;
+                        updateTimerDisplay();
+                    }, 1000);
+                }
+            });
+        });
+
+        // Interactive Functions
+        function calcZ() {
+            const val = document.getElementById('inputZ').value;
+            if(val === '') return;
+            document.getElementById('resultZ').innerText = `Z(${val}) = 0`;
+        }
+
+        function calcS() {
+            const val = document.getElementById('inputS').value;
+            if(val === '') return;
+            const res = parseInt(val) + 1;
+            document.getElementById('resultS').innerText = `S(${val}) = ${res}`;
+        }
+
+        function calcU() {
+            const x1 = document.getElementById('projX1').value;
+            const x2 = document.getElementById('projX2').value;
+            const x3 = document.getElementById('projX3').value;
+            const i = parseInt(document.getElementById('projI').value);
+            
+            if(x1 === '' || x2 === '' || x3 === '') {
+                document.getElementById('resultU').innerText = "Preencha x1, x2 e x3.";
+                return;
+            }
+
+            let res;
+            if(i === 1) res = x1;
+            else if(i === 2) res = x2;
+            else if(i === 3) res = x3;
+            else {
+                document.getElementById('resultU').innerText = "Índice 'i' deve ser entre 1 e 3.";
+                return;
+            }
+
+            document.getElementById('resultU').innerText = `U_${i}^3(${x1}, ${x2}, ${x3}) = ${res}`;
+        }
+
+        function toggleGabarito(id) {
+            const el = document.getElementById(id);
+            if(el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slides - Paradigma Funcional I</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/simple.min.css" id="theme">
+
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: #2c3e50;
+            text-transform: none;
+        }
+        .reveal h2 { font-size: 1.4em; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 15px;}
+        .reveal h3 { font-size: 1.1em; color: #34495e; }
+        
+        .reveal p, .reveal li {
+            font-size: 0.85em;
+            line-height: 1.3;
+            text-align: left;
+        }
+        
+        .reveal ul { margin-bottom: 10px; }
+        .reveal li { margin-bottom: 5px; }
+
+        .theory-box {
+            background: #fff3e0;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border-left: 5px solid #ff9800;
+            font-size: 0.8em;
+            margin: 15px 0;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .interactive-box {
+            background: #eef2f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            margin-top: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .interactive-box input {
+            font-size: 1em;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .interactive-box button {
+            font-size: 1em;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .reveal table {
+            font-size: 0.7em;
+            width: 100%;
+        }
+        .reveal th { background: #f4f6f7; }
+        
+        .gabarito-box {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            font-size: 0.8em;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .highlight {
+            background-color: #e1f5fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* Fix all layout bounds */
+        .reveal .slides section {
+            overflow: hidden !important; 
+            padding: 10px !important;
+            box-sizing: border-box;
+            height: auto !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide Timer Widget -->
+    <div id="slide-timer" style="position: fixed; top: 10px; right: 20px; background-color: #2c3e50; color: white; padding: 10px 20px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; display: none; transition: background-color 0.3s; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        ⏱️ <span id="slide-timer-current">00:00</span> / <span id="slide-timer-total">10:00</span>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Capa -->
+            <section data-category="capa">
+                <h1 style="font-size: 2em;">Teoria da Computação</h1>
+                <h3 style="font-size: 1.3em;">Paradigma Funcional I</h3>
+                <p style="text-align: center; margin-top: 30px; font-size: 0.9em;">Fundamentos, Funções Iniciais e o Operador de Composição</p>
+                <p style="text-align: center; font-size: 0.7em; color: gray;">Encontro 14 — Duração: 100 min</p>
+            </section>
+
+            <!-- Cronograma -->
+            <section data-category="cronograma">
+                <h2>⏱️ Cronograma da Aula</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tempo</th>
+                            <th>Etapa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>10 min</td><td>Contextualização & Fundamentos</td></tr>
+                        <tr><td>05 min</td><td>Glossário de Termos</td></tr>
+                        <tr><td>25 min</td><td>As Três Funções Iniciais (Básicas)</td></tr>
+                        <tr><td>25 min</td><td>Operador de Composição</td></tr>
+                        <tr><td>20 min</td><td>Exemplos Resolvidos Passo a Passo</td></tr>
+                        <tr><td>15 min</td><td>Atividade Prática em Sala</td></tr>
+                        <tr><td>05 min</td><td>Fechamento e Limitações</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ================= CONTEXTUALIZAÇÃO ================= -->
+            <section data-category="contextualizacao">
+                <h2>1. A Crise Matemática e a Computabilidade</h2>
+                <p>No início do século XX, matemáticos buscavam um processo mecânico universal para provar teoremas (<em>Entscheidungsproblem</em> de Hilbert).</p>
+                <div class="theory-box">
+                    Para responder "O que é computável?", surgiram abordagens diferentes na década de 1930.
+                </div>
+            </section>
+
+            <section data-category="contextualizacao">
+                <h2>As Duas Abordagens Históricas</h2>
+                <ul>
+                    <li><strong>Operacional/Imperativa:</strong> Máquina de Turing.<br> Foco no "hardware" (Fita, estados, memória). Como a máquina altera os dados passo a passo.</li>
+                    <li style="margin-top: 20px;"><strong>Aritmética/Lógica:</strong> Alonzo Church e Stephen Kleene.<br> Foco puramente em mapeamento matemático (O que entra $\to$ O que sai), sem se importar com a máquina física.</li>
+                </ul>
+            </section>
+
+            <section data-category="contextualizacao">
+                <h2>Princípios do Paradigma Funcional</h2>
+                <p>O trabalho de Church/Kleene fundamenta a <strong>Programação Funcional Pura</strong> (como Lisp e Haskell). Suas regras são rígidas:</p>
+                <ul>
+                    <li><strong>Sem Estado (Stateless):</strong> Não existem variáveis mutáveis. $x$ é sempre $x$.</li>
+                    <li><strong>Sem Efeitos Colaterais:</strong> Uma função não pode alterar arquivos, tela ou memória global. Ela apenas avalia a expressão e devolve um resultado.</li>
+                    <li><strong>Domínio Restrito:</strong> Trabalharemos exclusivamente com números naturais ($\mathbb{N} = \{0, 1, 2, \dots\}$).</li>
+                </ul>
+            </section>
+
+            <!-- ================= GLOSSÁRIO ================= -->
+            <section data-category="glossario">
+                <h2>📖 Glossário: Aridade e Tupla</h2>
+                <ul>
+                    <li><strong>Aridade:</strong> É a quantidade de parâmetros de entrada de uma função. 
+                        <ul style="font-size: 0.9em; margin-top: 10px;">
+                            <li>$f(x)$ $\to$ Aridade 1 (Unária)</li>
+                            <li>$g(x, y)$ $\to$ Aridade 2 (Binária)</li>
+                        </ul>
+                    </li>
+                    <li style="margin-top: 20px;"><strong>Tupla:</strong> Sequência ordenada finita de valores, denotada por $(x_1, \dots, x_n)$. Tratamos as múltiplas entradas sempre como uma tupla única de dimensão $n$.</li>
+                </ul>
+            </section>
+            
+            <section data-category="glossario">
+                <h2>📖 Glossário: Funções Atômicas e Iniciais</h2>
+                <ul>
+                    <li><strong>Funções Atômicas:</strong> Blocos matemáticos indivisíveis. Fazem apenas uma operação minúscula e são inquebráveis.</li>
+                    <li style="margin-top: 20px;"><strong>Funções Iniciais:</strong> Funções que assumimos como axiomáticas. Elas já existem no modelo básico da natureza e não precisam ser justificadas.</li>
+                </ul>
+            </section>
+
+            <section data-category="glossario">
+                <h2>📖 Glossário: Totalidade</h2>
+                <ul>
+                    <li><strong>Função Total vs. Parcial:</strong></li>
+                </ul>
+                <p>Trabalharemos apenas com <strong>Funções Totais</strong> ($f: \mathbb{N}^k \to \mathbb{N}$).</p>
+                <div class="theory-box">
+                    Isso significa que para <em>qualquer</em> natural inserido, a função SEMPRE retorna uma resposta válida no conjunto dos naturais, sem dar erro de sistema ou entrar em loop infinito.
+                </div>
+            </section>
+
+            <!-- ================= FUNÇÕES BÁSICAS ================= -->
+            <section data-category="funcoes-basicas">
+                <h2>2. As Funções Iniciais (Básicas)</h2>
+                <div class="theory-box">
+                    Para a Teoria das Funções Recursivas, não precisamos de registradores ou código assembly. Precisamos apenas de 3 axiomas fundamentais (Funções Iniciais) para gerar <strong>qualquer algoritmo do mundo</strong>.
+                </div>
+                <ul style="margin-top: 20px;">
+                    <li><strong>Z</strong>: A capacidade de zerar.</li>
+                    <li><strong>S</strong>: A capacidade de dar o próximo passo.</li>
+                    <li><strong>U</strong>: A capacidade de focar no que importa.</li>
+                </ul>
+            </section>
+
+            <section data-category="funcoes-basicas">
+                <h2>A. Função Zero ($Z$)</h2>
+                <p>O conceito de "Nulo" é vital para ancorar a matemática. A função Zero atua como um buraco negro: destrói a informação de entrada e retorna o axioma 0.</p>
+                <div style="text-align: center; font-size: 1.5em; margin: 30px 0; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    $$Z(x) = 0, \quad \forall x \in \mathbb{N}$$
+                </div>
+            </section>
+
+            <section data-category="funcoes-basicas">
+                <h2>Demonstração: Função Zero</h2>
+                <div class="interactive-box">
+                    <label>Teste a Função $Z(x)$:</label><br><br>
+                    Entrada $x =$ <input type="number" id="inputZ" value="999" min="0">
+                    <button onclick="calcZ()">Avaliar</button>
+                    <div id="resultZ" class="result" style="font-size: 1.5em; margin-top: 20px;"></div>
+                </div>
+            </section>
+
+            <section data-category="funcoes-basicas">
+                <h2>B. Função Sucessor ($S$)</h2>
+                <p>Inspirada nos Axiomas de Peano. É o motor da computação. Ela nos permite sair do Zero e gerar qualquer número natural através da aplicação do "passo seguinte".</p>
+                <div style="text-align: center; font-size: 1.5em; margin: 30px 0; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    $$S(x) = x + 1, \quad \forall x \in \mathbb{N}$$
+                </div>
+            </section>
+
+            <section data-category="funcoes-basicas">
+                <h2>Demonstração: Função Sucessor</h2>
+                <div class="interactive-box">
+                    <label>Teste a Função $S(x)$:</label><br><br>
+                    Entrada $x =$ <input type="number" id="inputS" value="5" min="0">
+                    <button onclick="calcS()">Avaliar</button>
+                    <div id="resultS" class="result" style="font-size: 1.5em; margin-top: 20px;"></div>
+                </div>
+            </section>
+
+            <section data-category="funcoes-basicas">
+                <h2>C. Função Projeção ($U_i^n$)</h2>
+                <p>Quando temos muitas variáveis (uma tupla de $n$ elementos), precisamos rotear dados. A Projeção ignora o que não importa e extrai o elemento exato da posição $i$.</p>
+                <div style="text-align: center; font-size: 1.5em; margin: 30px 0; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    $$U_i^n(x_1, \dots, x_n) = x_i$$
+                </div>
+            </section>
+
+            <section data-category="funcoes-basicas">
+                <h2>Demonstração: Função Projeção</h2>
+                <div class="interactive-box" style="padding: 20px;">
+                    <label style="font-size: 1.2em; font-weight: bold;">Simulador de $U_i^n$:</label><br><br>
+                    Tupla de Entrada ($n=3$): <br>
+                    (<input type="number" id="projX1" placeholder="x1" style="margin: 10px 5px;">, 
+                    <input type="number" id="projX2" placeholder="x2" style="margin: 10px 5px;">, 
+                    <input type="number" id="projX3" placeholder="x3" style="margin: 10px 5px;">)<br>
+                    
+                    <div style="margin: 20px 0;">
+                        Extrair Posição ($i$): <input type="number" id="projI" value="2" min="1" max="3">
+                    </div>
+                    
+                    <button onclick="calcU()" style="padding: 10px 30px;">Avaliar Extração</button>
+                    <div id="resultU" class="result" style="font-size: 1.3em; margin-top: 20px;"></div>
+                </div>
+            </section>
+
+            <!-- ================= COMPOSIÇÃO ================= -->
+            <section data-category="composicao">
+                <h2>3. O Operador de Composição</h2>
+                <div class="theory-box">
+                    <strong>O Problema:</strong> Se temos apenas $Z$, $S$ e $U$, como construímos um algoritmo complexo?
+                </div>
+                <p>Precisamos de uma "cola" lógica que nos permita plugar a saída de uma função pequena diretamente na entrada de outra.</p>
+                <p>Em programação, isso equivale ao <strong>Pipeline</strong> ou aninhamento de chamadas (ex: <code>f(x) = g(h(x))</code>).</p>
+            </section>
+
+            <section data-category="composicao">
+                <h2>Aninhamento no Código: JavaScript</h2>
+                <p style="font-size: 0.9em;">A composição matemática $C(g; h)$ na prática: a função mais interna ($h$) resolve primeiro.</p>
+                <div style="background: #2d2d2d; color: #fff; padding: 25px; border-radius: 8px; text-align: left; font-family: monospace; font-size: 1.2em; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    <span style="color: #c678dd;">const</span> n = Math.<span style="color: #61afef;">abs</span>(<span style="color: #61afef;">parseInt</span>(<span style="color: #98c379;">"-42"</span>));<br><br>
+                    <span style="color: #5c6370; font-size: 0.8em;">// parseInt() = h (Resolve 1º)<br>// Math.abs() = g (Resolve 2º)</span>
+                </div>
+            </section>
+
+            <section data-category="composicao">
+                <h2>Aninhamento no Código: Java</h2>
+                <p style="font-size: 0.9em;">A composição matemática $C(g; h)$ na prática: a função mais interna ($h$) resolve primeiro.</p>
+                <div style="background: #2d2d2d; color: #fff; padding: 25px; border-radius: 8px; text-align: left; font-family: monospace; font-size: 1.2em; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    <span style="color: #e5c07b;">String</span> v = String.<span style="color: #61afef;">valueOf</span>(Math.<span style="color: #61afef;">max</span>(a, b));<br><br>
+                    <span style="color: #5c6370; font-size: 0.8em;">// Math.max() = h (Resolve 1º)<br>// String.valueOf() = g (Resolve 2º)</span>
+                </div>
+            </section>
+
+            <section data-category="composicao">
+                <h2>Aninhamento no Código: Python</h2>
+                <p style="font-size: 0.9em;">A composição matemática $C(g; h)$ na prática: a função mais interna ($h$) resolve primeiro.</p>
+                <div style="background: #2d2d2d; color: #fff; padding: 25px; border-radius: 8px; text-align: left; font-family: monospace; font-size: 1.2em; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    res = <span style="color: #61afef;">sum</span>(<span style="color: #61afef;">map</span>(<span style="color: #e5c07b;">int</span>, [<span style="color: #98c379;">"1"</span>, <span style="color: #98c379;">"2"</span>]))<br><br>
+                    <span style="color: #5c6370; font-size: 0.8em;">// map() = h (Resolve 1º)<br>// sum() = g (Resolve 2º)</span>
+                </div>
+            </section>
+
+            <section data-category="composicao">
+                <h2>Aninhamento no Código: PHP</h2>
+                <p style="font-size: 0.9em;">A composição matemática $C(g; h)$ na prática: a função mais interna ($h$) resolve primeiro.</p>
+                <div style="background: #2d2d2d; color: #fff; padding: 25px; border-radius: 8px; text-align: left; font-family: monospace; font-size: 1.2em; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    $h = <span style="color: #61afef;">md5</span>(<span style="color: #61afef;">strtoupper</span>($senha));<br><br>
+                    <span style="color: #5c6370; font-size: 0.8em;">// strtoupper() = h (Resolve 1º)<br>// md5() = g (Resolve 2º)</span>
+                </div>
+            </section>
+
+            <section data-category="composicao">
+                <h2>Regras Rígidas de Tipagem (Aridade)</h2>
+                <p>Para uma composição matemática ser válida, os encaixes precisam bater exata e rigidamente:</p>
+                <ul>
+                    <li>Temos uma função externa $g$ que requer $k$ entradas.</li>
+                    <li>Logo, <strong>somos obrigados</strong> a fornecer exatas $k$ funções internas ($h_1, \dots, h_k$).</li>
+                    <li>Além disso, todas as funções internas $h$ devem aceitar a mesma quantidade de variáveis de entrada ($m$).</li>
+                </ul>
+            </section>
+
+            <section data-category="composicao">
+                <h2>A Definição Formal</h2>
+                <p style="font-size: 0.85em; margin-bottom: 5px;">A composição de $g$ com $h$ gera a função $f = C(g; h_1, \dots, h_k)$:</p>
+                <div style="background: #f8f9fa; padding: 10px; text-align: center; border: 1px solid #ccc; font-size: 0.85em; border-radius: 8px;">
+                    $$f(x_1, \dots, x_m) = g\Big( h_1(x_1, \dots, x_m), \dots, h_k(x_1, \dots, x_m) \Big)$$
+                </div>
+                
+                <p style="margin-top: 15px; font-size: 0.85em;"><strong>Como é avaliado:</strong> As entradas $x$ vão paralelamente para todos os $h$. Eles calculam, agrupam os resultados e injetam tudo junto em $g$.</p>
+            </section>
+
+            <!-- ================= EXEMPLOS ================= -->
+            <section data-category="exemplos">
+                <h2>✏️ Resolução de Problemas</h2>
+                <p>A prova de que uma função é computável exige este raciocínio:</p>
+                <ol style="margin-top: 15px;">
+                    <li>Identifique o objetivo numérico da função.</li>
+                    <li>Como resolver usando APENAS $Z$, $S$ e $U$?</li>
+                    <li>Escreva a fórmula matemática avaliada (de dentro para fora).</li>
+                    <li>Transforme na <strong>Notação Formal</strong> usando a notação $C( \dots )$.</li>
+                </ol>
+            </section>
+
+            <section data-category="exemplos">
+                <h2>Exemplo 1: Constante Um</h2>
+                <p style="font-size: 0.85em; margin-bottom: 10px;"><strong>Objetivo:</strong> Construir $f(x) = 1$ para qualquer $x$.</p>
+                <ul style="font-size: 0.85em;">
+                    <li>Queremos ignorar o $x$ atual. Usamos $Z(x) = 0$.</li>
+                    <li>Para chegar a 1, aplicamos o sucessor: $S(0)$.</li>
+                    <li>Portanto: $f(x) = S(Z(x))$.</li>
+                </ul>
+                <div style="background: #e1f5fe; padding: 10px; text-align: center; font-size: 1.1em; border-radius: 8px; margin-top: 15px;">
+                    <strong>Formalização:</strong><br>
+                    $$f = C(S; Z)$$
+                </div>
+            </section>
+
+            <section data-category="exemplos">
+                <h2>Exemplo 2: Constante Dois</h2>
+                <p style="font-size: 0.8em; margin-bottom: 10px;"><strong>Objetivo:</strong> $f(x_1, x_2) = 2$</p>
+                <p style="font-size: 0.75em; margin-bottom: 10px;">Não podemos usar $Z$ direto nas duas variáveis. Precisamos de Projeção.</p>
+                
+                <ol style="font-size: 0.75em; margin-bottom: 10px;">
+                    <li><strong>Projetar:</strong> $U_1^2(x_1, x_2) = x_1$</li>
+                    <li><strong>Zerar:</strong> $h_1 = Z(U_1^2(x_1, x_2)) = 0$</li>
+                    <li><strong>Primeiro Sucessor:</strong> $h_2 = S(h_1) = 1$</li>
+                    <li><strong>Segundo Sucessor:</strong> $f = S(h_2) = 2$</li>
+                </ol>
+                
+                <div style="background: #e1f5fe; padding: 10px; text-align: center; font-size: 1em; border-radius: 8px;">
+                    <strong>Formalização Embutida:</strong><br>
+                    $$f = C(S; C(S; C(Z; U_1^2)))$$
+                </div>
+            </section>
+
+            <section data-category="exemplos">
+                <h2>Exemplo 3: Reordenação</h2>
+                <p style="font-size: 0.8em; margin-bottom: 10px;"><strong>Objetivo:</strong> Dada $g(x_1, x_2)$, crie $f(x_1, x_2) = g(x_2, x_1)$.</p>
+                
+                <ul style="font-size: 0.8em; margin-bottom: 15px;">
+                    <li>$g$ requer 2 entradas. Logo precisamos de 2 funções internas.</li>
+                    <li>Para a posição 1, busque o 2º parâmetro: $U_2^2(x_1, x_2)$.</li>
+                    <li>Para a posição 2, busque o 1º parâmetro: $U_1^2(x_1, x_2)$.</li>
+                </ul>
+                
+                <div style="background: #e1f5fe; padding: 10px; text-align: center; font-size: 1em; border-radius: 8px;">
+                    $$f = C(g; U_2^2, U_1^2)$$
+                </div>
+            </section>
+            
+            <section data-category="exemplos">
+                <h2>Exemplo 4: Soma Constante</h2>
+                <p style="font-size: 0.85em; margin-bottom: 10px;"><strong>Objetivo:</strong> $f(x) = x + 2$</p>
+                <ul style="font-size: 0.85em; margin-bottom: 15px;">
+                    <li>Para somar 2, aplicamos o Sucessor duas vezes: $S(S(\dots))$.</li>
+                    <li>A função interna capturando $x$ será a identidade: $U_1^1(x)$.</li>
+                    <li>Avaliando: $f(x) = S(S(U_1^1(x)))$.</li>
+                </ul>
+                <div style="background: #e1f5fe; padding: 10px; text-align: center; font-size: 1.1em; border-radius: 8px;">
+                    $$f = C(S; C(S; U_1^1))$$
+                </div>
+            </section>
+
+            <!-- ================= ATIVIDADES ================= -->
+            <section data-category="atividade">
+                <h2>📝 Atividade Prática (Duplas)</h2>
+                <p style="font-size: 0.9em;">Para os próximos desafios, utilizem um rascunho e definam:</p>
+                <ol style="margin-top: 15px; font-size: 0.85em;">
+                    <li>A equação lógica de dentro para fora (ex: $f(x) = S(Z(x))$).</li>
+                    <li>A formalização final utilizando a notação de Composição $C( \dots )$.</li>
+                </ol>
+            </section>
+
+            <section data-category="atividade">
+                <h2>📝 Exercício A - Enunciado</h2>
+                <div style="background: #fff; border: 2px dashed #3498db; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <p style="font-size: 1.1em; text-align: center; margin: 0;">
+                        Construa formalmente a função:<br><br>
+                        <strong>$f(x_1, x_2, x_3) = x_2 + 1$</strong><br><br>
+                        usando APENAS Funções Iniciais e Composição.
+                    </p>
+                </div>
+            </section>
+
+            <section data-category="atividade">
+                <h2>📝 Exercício A - Resolução</h2>
+                <div class="gabarito-box">
+                    <p><strong>Passo 1:</strong> Temos 3 variáveis de entrada, mas precisamos focar apenas na 2ª e descartar o resto. Usamos a projeção: $U_2^3(x_1, x_2, x_3)$.</p>
+                    <p><strong>Passo 2:</strong> Para aplicar o "+ 1", passamos a projeção diretamente para a função Sucessor.</p>
+                    <hr style="margin: 10px 0;">
+                    <p style="text-align: center; margin-bottom: 5px;"><strong>Equação:</strong> $$f(x_1, x_2, x_3) = S(U_2^3(x_1, x_2, x_3))$$</p>
+                    <p style="text-align: center; margin: 0;"><strong>Formalização:</strong> $$f = C(S; U_2^3)$$</p>
+                </div>
+            </section>
+
+            <section data-category="atividade">
+                <h2>📝 Exercício B - Enunciado</h2>
+                <div style="background: #fff; border: 2px dashed #3498db; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <p style="font-size: 1em; text-align: center;">
+                        Você tem uma função pré-pronta $g(x_1, x_2)$ que exige duas entradas.<br><br>
+                        Crie a formalização matemática de uma nova função $h(x)$ que recebe apenas UM parâmetro, clona ele e injeta nas duas posições de $g$.<br><br>
+                        <strong>Objetivo: $h(x) = g(x, x)$</strong>
+                    </p>
+                </div>
+            </section>
+
+            <section data-category="atividade">
+                <h2>📝 Exercício B - Resolução</h2>
+                <div class="gabarito-box">
+                    <p><strong>Passo 1:</strong> $g$ demanda 2 variáveis. Você é obrigado a colocar duas funções internas dentro da Composição $C$.</p>
+                    <p><strong>Passo 2:</strong> A única forma de pegar $x$ e repassá-lo é projetando a si mesmo: $U_1^1(x)$. Fazemos isso para ambas as entradas.</p>
+                    <hr style="margin: 10px 0;">
+                    <p style="text-align: center; margin-bottom: 5px;"><strong>Equação:</strong> $$h(x) = g(U_1^1(x), U_1^1(x))$$</p>
+                    <p style="text-align: center; margin: 0;"><strong>Formalização:</strong> $$h = C(g; U_1^1, U_1^1)$$</p>
+                </div>
+            </section>
+
+            <!-- ================= FECHAMENTO ================= -->
+            <section data-category="fechamento">
+                <h2>🎯 O Limite da Composição</h2>
+                <p>Até aqui, conseguimos zerar, incrementar, reordenar, ignorar e clonar parâmetros combinando os 3 axiomas iniciais.</p>
+                <div class="theory-box" style="font-size: 0.9em; padding: 15px;">
+                    <strong>A Provocação Final:</strong><br><br> 
+                    Como construiríamos a operação de <strong>Adição</strong> verdadeira ($add(x, y) = x + y$) utilizando APENAS a Composição e $Z, S, U$?
+                </div>
+            </section>
+
+            <section data-category="fechamento">
+                <h2>O Paradoxo da Adição</h2>
+                <p style="font-size: 0.85em; margin-bottom: 10px;">Tentativa de construir $add(x,y) = x + y$ com Sucessores:</p>
+                <ul style="font-size: 0.8em; margin-bottom: 10px;">
+                    <li>Se $y = 1 \implies add(x,1) = S(U_1^2(x, y))$</li>
+                    <li>Se $y = 2 \implies add(x,2) = S(S(U_1^2(x, y)))$</li>
+                    <li>Se $y = 3 \implies add(x,3) = S(S(S(U_1^2(x, y))))$</li>
+                </ul>
+                <div class="theory-box" style="font-size: 0.8em; padding: 10px;">
+                    Para cada incremento em $y$, precisamos encadear mais um $S$ na fórmula. Mas $y$ é uma variável!
+                </div>
+            </section>
+
+            <section data-category="fechamento">
+                <h2>A Parede Teórica</h2>
+                <p style="font-size: 0.85em;">Não podemos ter uma fórmula dinâmica na composição pura.</p>
+                
+                <div class="highlight" style="padding: 10px; margin: 15px 0; border-left: 5px solid #e74c3c; font-size: 0.9em;">
+                    A Composição matemática exige que saibamos o tamanho da fórmula antecipadamente. Ela não suporta laços onde o fim depende de uma variável (como no `while` e `for`).
+                </div>
+                
+                <p style="text-align: center; margin-top: 20px; font-weight: bold; color: #e74c3c; font-size: 1.1em;">
+                    Solução no Próximo Encontro:<br> O Operador de Recursão Primitiva.
+                </p>
+            </section>
+
+            <!-- ================= REFERÊNCIAS ================= -->
+            <section data-category="referencias">
+                <h2>📚 Referências Bibliográficas</h2>
+                <ul style="font-size: 0.8em; line-height: 1.8; margin-top: 20px;">
+                    <li><strong>SIPSER, Michael.</strong> <em>Introdução à Teoria da Computação.</em> 2ª ed. Cengage Learning, 2007.</li>
+                    <li><strong>DIVERIO, T. A.; MENEZES, P. B.</strong> <em>Teoria da Computação: Máquinas Universais e Computabilidade.</em> 3ª ed. Bookman, 2011.</li>
+                    <li><strong>LEWIS, H. R.; PAPADIMITRIOU, C. H.</strong> <em>Elementos de Teoria da Computação.</em> 2ª ed. Bookman, 2000.</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Scripts do Reveal.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            center: false, /* Desativa a centralização para evitar cortes verticais */
+            margin: 0.05, /* Margem bem curta */
+            plugins: [ RevealMath.MathJax3 ]
+        });
+
+        // ================= TIMER LOGIC =================
+        const categoryTimes = {
+            'capa': 0,
+            'cronograma': 0,
+            'contextualizacao': 10,
+            'glossario': 5,
+            'funcoes-basicas': 25,
+            'composicao': 25,
+            'exemplos': 20,
+            'atividade': 15,
+            'fechamento': 5,
+            'referencias': 0
+        };
+
+        let timerInterval;
+        let secondsElapsed = 0;
+        let currentCategoryTotalSeconds = 0;
+        let currentCategory = '';
+
+        function updateSlideTimerDisplay() {
+            const timerDiv = document.getElementById('slide-timer');
+            if (currentCategoryTotalSeconds === 0) {
+                timerDiv.style.display = 'none';
+                return;
+            }
+            timerDiv.style.display = 'block';
+            
+            let mElapsed = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            let sElapsed = (secondsElapsed % 60).toString().padStart(2, '0');
+            
+            let mTotal = Math.floor(currentCategoryTotalSeconds / 60).toString().padStart(2, '0');
+            let sTotal = (currentCategoryTotalSeconds % 60).toString().padStart(2, '0');
+            
+            document.getElementById('slide-timer-current').innerText = `${mElapsed}:${sElapsed}`;
+            document.getElementById('slide-timer-total').innerText = `${mTotal}:${sTotal}`;
+            
+            if (secondsElapsed >= currentCategoryTotalSeconds) {
+                timerDiv.style.backgroundColor = '#e74c3c'; 
+            } else {
+                timerDiv.style.backgroundColor = '#2c3e50'; 
+            }
+        }
+
+        Reveal.on('slidechanged', event => {
+            let slide = event.currentSlide;
+            let category = slide.getAttribute('data-category');
+
+            if (category && category !== currentCategory) {
+                currentCategory = category;
+                clearInterval(timerInterval);
+                secondsElapsed = 0;
+                
+                let minutes = categoryTimes[category] || 0;
+                currentCategoryTotalSeconds = minutes * 60;
+                
+                updateSlideTimerDisplay();
+                if (currentCategoryTotalSeconds > 0) {
+                    timerInterval = setInterval(() => {
+                        secondsElapsed++;
+                        updateSlideTimerDisplay();
+                    }, 1000);
+                }
+            }
+        });
+
+        // ================= INTERACTIVE FUNCTIONS =================
+        function calcZ() {
+            const val = document.getElementById('inputZ').value;
+            if(val === '') return;
+            document.getElementById('resultZ').innerText = `Z(${val}) = 0`;
+        }
+
+        function calcS() {
+            const val = document.getElementById('inputS').value;
+            if(val === '') return;
+            const res = parseInt(val) + 1;
+            document.getElementById('resultS').innerText = `S(${val}) = ${res}`;
+        }
+
+        function calcU() {
+            const x1 = document.getElementById('projX1').value;
+            const x2 = document.getElementById('projX2').value;
+            const x3 = document.getElementById('projX3').value;
+            const i = parseInt(document.getElementById('projI').value);
+            
+            if(x1 === '' || x2 === '' || x3 === '') {
+                document.getElementById('resultU').innerText = "Preencha x1, x2 e x3.";
+                return;
+            }
+
+            let res;
+            if(i === 1) res = x1;
+            else if(i === 2) res = x2;
+            else if(i === 3) res = x3;
+            else {
+                document.getElementById('resultU').innerText = "Índice 'i' deve ser 1, 2 ou 3.";
+                return;
+            }
+            document.getElementById('resultU').innerText = `U_${i}^3(${x1}, ${x2}, ${x3}) = ${res}`;
+        }
+    </script>
+</body>
+</html>

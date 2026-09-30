@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 2: Paradigma Funcional II - Recursão Primitiva e Laços Contados</title>
+    
+    <!-- Configuração do MathJax para fórmulas LaTeX -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #27ae60;
+            --accent-hover: #219150;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-border: #ddd;
+            --nav-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background-color: #1e2b37;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .top-navbar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .top-navbar a:hover {
+            color: #2ecc71;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            text-align: center;
+            padding: 2.2rem 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.3rem;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 1.15rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1250px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        nav {
+            width: 270px;
+            background: var(--nav-bg);
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--light-border);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.03);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            margin-bottom: 8px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            display: block;
+            padding: 10px 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.92rem;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        main {
+            flex: 1;
+            padding: 2.2rem;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .interactive-box {
+            background: #eef9f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .theory-box {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #f39c12;
+        }
+
+        .human-box {
+            background: #eef9f1;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #27ae60;
+            color: #1e4620;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .alert-box {
+            background: #fdf2f2;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        input[type="number"], input[type="text"], select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        button.btn-action {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            padding: 12px;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px dashed var(--accent-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        th {
+            background-color: #f4f6f7;
+            color: var(--primary-color);
+        }
+
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.95rem;
+        }
+        
+        code {
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+        }
+
+        .gabarito {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                flex-direction: column;
+            }
+            nav {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--light-border);
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Unified Nav -->
+    <div class="top-navbar">
+        <div>
+            <a href="index.html">🏠 Menu Principal</a>
+            <a href="material-interativo.html">1️⃣ Módulo 1 (Básicas & Composição)</a>
+            <a href="modulo2-material.html" style="color: #2ecc71; font-weight: bold;">2️⃣ Módulo 2 (Recursão Primitiva & For)</a>
+            <a href="modulo3-material.html">3️⃣ Módulo 3 (Minimização & While)</a>
+            <a href="modulo-fechamento-material.html">🏁 Fechamento & MTs</a>
+        </div>
+        <div>
+            <a href="modulo2-slides.html" target="_blank">📽️ Slides do Módulo 2</a>
+            <a href="questoes-enade.html">📝 Questões ENADE</a>
+        </div>
+    </div>
+
+    <header>
+        <h1>Módulo 2 — Paradigma Funcional II</h1>
+        <p>Recursão Primitiva ($R$) mapeada para Laços Contados (<code>for</code>) e Funções Totais</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-target="revisao-gancho">1. Revisão e Motivação</a></li>
+                <li><a href="#" data-target="definicao-formal">2. Definição Formal do Operador $R$</a></li>
+                <li><a href="#" data-target="mapeamento-for">3. Mapeamento: $R \leftrightarrow$ Laço <code>for</code></a></li>
+                <li><a href="#" data-target="construcao-adicao">4. Construção da Adição ($add$)</a></li>
+                <li><a href="#" data-target="construcao-aritmica">5. Multiplicação, Predecessor e Subtração</a></li>
+                <li><a href="#" data-target="predicados">6. Predicados Lógicos e Condicionais</a></li>
+                <li><a href="#" data-target="simulador-interativo">7. Simulador Interativo de Passo a Passo</a></li>
+                <li><a href="#" data-target="limites-ackermann">8. Limites: A Função de Ackermann</a></li>
+                <li><a href="#" data-target="exercicios-praticos">9. Exercícios & Desafios</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- 1. Revisão e Motivação -->
+            <section id="revisao-gancho" class="active">
+                <h2>1. Revisão e Motivação</h2>
+                <div class="card">
+                    <h3>Onde paramos e por que precisamos da Recursão Primitiva?</h3>
+                    <p>No <strong>Módulo 1</strong>, aprendemos as três funções iniciais/básicas ($Z$, $S$, $U_i^n$) e o operador de <strong>Composição</strong> ($C$). Com eles, conseguimos:</p>
+                    <ul>
+                        <li>Gerar qualquer constante ($f(x) = 5$).</li>
+                        <li>Reordenar, duplicar ou descartar argumentos ($f(x, y) = x$).</li>
+                        <li>Somar constantes fixas ($f(x) = x + 3 = S(S(S(x)))$).</li>
+                    </ul>
+
+                    <div class="alert-box">
+                        <strong>⚠️ A Limitação Crítica da Composição:</strong>
+                        <p>A composição pura <strong>não permite repetição parametrizada</strong>. Se quisermos calcular $x + y$, o número de vezes que devemos aplicar o Sucessor ($S$) depende do valor dinâmico de $y$. Não é possível escrever um número variável de chamadas a $S$ usando apenas composições estáticas!</p>
+                    </div>
+
+                    <div class="theory-box">
+                        <strong>🎯 O Objetivo do Módulo 2:</strong>
+                        <p>Introduzir o operador formal de <strong>Recursão Primitiva ($R$)</strong>. Esse operador é a tradução matemática exata dos <strong>laços contados finitos (comando <code>for</code>)</strong> da programação imperativa. Com ele, construímos adição, multiplicação, exponenciação, fatorial, subtração truncada, testes condicionais e muito mais — garantindo 100% que todo programa sempre <strong>termina</strong> (funções totais).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Definição Formal -->
+            <section id="definicao-formal">
+                <h2>2. Definição Formal da Recursão Primitiva ($R$)</h2>
+                <div class="card">
+                    
+                    <div class="human-box" style="background: #eaf2f8; border-left-color: #2980b9; color: #1a365d;">
+                        <h3>💡 Por que usamos as letras $g$ e $h$ nas fórmulas?</h3>
+                        <p>Na literatura matemática e na ciência da computação teórica, a notação formal usa $f = R(g, h)$ porque construir um laço de repetição requer <strong>duas responsabilidades totalmente diferentes</strong>:</p>
+                        <ul>
+                            <li><strong>$f$: A Função Final</strong> — É o algoritmo que você quer criar (ex: a função Adição, Multiplicação ou Fatorial).</li>
+                            <li><strong>$g$: A Função de BASE / Inicialização ($y = 0$)</strong> — Responde à pergunta: <em>"Qual é o valor do acumulador antes de começar o laço?"</em> (Pense no $g$ como <strong>G</strong>round/Base). Ela cuida da entrada $\vec{x}$ no ponto de partida zero.</li>
+                            <li><strong>$h$: A Função de PASSO / Iteração ($y + 1$)</strong> — Responde à pergunta: <em>"O que o corpo do laço <code>for</code> deve fazer a cada volta para avançar um degrau?"</em> (Pense no $h$ como <strong>H</strong>elper/Passo iterativo).</li>
+                        </ul>
+                        <p style="margin-bottom:0;"><strong>Em resumo na programação:</strong> Todo laço <code>for</code> precisa de um valor inicial (fornecido por <strong>$g$</strong>) e de uma regra de atualização a cada volta (fornecida por <strong>$h$</strong>). Por isso o operador de recursão recebe esse par: $R(g, h)$!</p>
+                    </div>
+
+                    <p>A Recursão Primitiva define a nova função $f$ combinando rigorosamente essa função base $g$ e a função de passo $h$:</p>
+
+                    <div class="theory-box">
+                        <h3>Esquema de Recursão Primitiva Geral (Aridade $n+1$)</h3>
+                        <p>Sejam $g: \mathbb{N}^n \to \mathbb{N}$ (função base) e $h: \mathbb{N}^{n+2} \to \mathbb{N}$ (função de passo). A função $f: \mathbb{N}^{n+1} \to \mathbb{N}$ obtida por recursão primitiva de $g$ e $h$, denotada por $f = R(g, h)$, é definida pelo par de equações:</p>
+                        
+                        $$\begin{cases} 
+                        f(\vec{x}, 0) = g(\vec{x}) & \text{(Caso Base: $y = 0$)} \\
+                        f(\vec{x}, y + 1) = h(\vec{x},\, y,\, f(\vec{x}, y)) & \text{(Passo Recursivo: $y+1$)}
+                        \end{cases}$$
+                    </div>
+
+                    <div class="human-box">
+                        🗣️ <strong>Versão Humana (Como ler e entender a fórmula):</strong>
+                        <ul>
+                            <li><strong>Caso Base ($y = 0$):</strong> Se não pediram nenhuma iteração, devolva o valor de partida calculado por $g(\vec{x})$.</li>
+                            <li><strong>Passo Recursivo ($y + 1$):</strong> Para calcular o resultado da etapa seguinte, pegue os dados de entrada $\vec{x}$, o contador da volta que acabou de terminar ($y$) e o <strong>resultado que já estava acumulado até então ($acc = f(\vec{x}, y)$)</strong>, e processe tudo usando a função de passo $h$.</li>
+                        </ul>
+                    </div>
+
+                    <h3>Análise Detalhada dos Parâmetros de $h$:</h3>
+                    <p>Observe com muito cuidado os argumentos que a função de passo $h$ recebe:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Argumento</th>
+                                <th>Significado Prático na Programação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$\vec{x} = (x_1, \dots, x_n)$</td>
+                                <td><strong>Parâmetros Fixos:</strong> Os dados de entrada mantidos constantes durante a computação.</td>
+                            </tr>
+                            <tr>
+                                <td>$y$</td>
+                                <td><strong>Contador da Iteração Anterior:</strong> O valor do índice da etapa que acabou de ser concluída.</td>
+                            </tr>
+                            <tr>
+                                <td>$f(\vec{x}, y)$</td>
+                                <td><strong>Acumulador (Resultado Parcial):</strong> O valor calculado na chamada anterior ($acc$).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="theory-box">
+                        <h3>Caso Especial: Função Unária ($n = 0$)</h3>
+                        <p>Quando a função procurada $f$ tem aridade 1 (recebe apenas $y$), o caso base não tem parâmetros $\vec{x}$, sendo uma constante natural $k \in \mathbb{N}$, e $h$ tem aridade 2:</p>
+                        $$\begin{cases} 
+                        f(0) = k \\
+                        f(y + 1) = h(y,\, f(y))
+                        \end{cases}$$
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Mapeamento For -->
+            <section id="mapeamento-for">
+                <h2>3. O Mapeamento: Recursão Primitiva $\leftrightarrow$ Laço <code>for</code></h2>
+                <div class="card">
+                    <p>Existe uma correspondência biunívoca entre o operador matemático $R(g, h)$ e a estrutura clássica de repetição finita contada (<code>for</code>).</p>
+
+                    <div class="comparison-grid">
+                        <div>
+                            <h4>Matemática (Recursão Primitiva)</h4>
+                            <pre><code>-- Definição Formal:
+f(x, 0)   = g(x)
+f(x, y+1) = h(x, y, f(x, y))</code></pre>
+                        </div>
+                        <div>
+                            <h4>Programação Imperativa (Python / C)</h4>
+                            <pre><code class="language-python">def f(x, y):
+    # Caso Base
+    acc = g(x) 
+    
+    # Laço Contado Exato (y iterações)
+    for i in range(0, y):
+        acc = h(x, i, acc)
+        
+    return acc</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="theory-box">
+                        <h3>Por que Toda Função Recursiva Primitiva é TOTAL?</h3>
+                        <p>No laço <code>for i in range(0, y)</code>, o número de voltas ($y$) é conhecido e fixado antes do início da primeira iteração. Como $y \in \mathbb{N}$ é um número finito e cada função básica leva tempo finito:</p>
+                        <ul>
+                            <li><strong>Não há risco de loop infinito!</strong> O laço sempre termina após exatamente $y$ passos.</li>
+                            <li><strong>Totalidade:</strong> Para qualquer entrada $(\vec{x}, y)$, o valor $f(\vec{x}, y)$ sempre existe e é único.</li>
+                            <li>A classe das <strong>Funções Recursivas Primitivas (PR)</strong> é um subconjunto estrito das funções computáveis totais.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Construção da Adição -->
+            <section id="construcao-adicao">
+                <h2>4. Construção Rigorosa da Adição ($add(x, y) = x + y$)</h2>
+                <div class="card">
+                    <p>Vamos deduzir passo a passo como definir formalmente a adição usando apenas $Z$, $S$, $U_i^n$, Composição e Recursão Primitiva.</p>
+
+                    <div class="theory-box">
+                        <h4>Passo 1: Raciocínio Indutivo sobre $y$</h4>
+                        <ul>
+                            <li>Se $y = 0$: $add(x, 0) = x$. Logo, a função base é a identidade/projeção: $g(x) = U_1^1(x)$.</li>
+                            <li>Se $y = y + 1$: $add(x, y+1) = (x + y) + 1 = S(add(x, y))$.</li>
+                        </ul>
+                    </div>
+
+                    <h4>Passo 2: Montagem da Função de Passo $h$</h4>
+                    <p>A função $h$ deve receber 3 argumentos: $(x, y, \text{acc})$, onde $\text{acc} = add(x, y)$, e devolver $S(\text{acc})$.</p>
+                    <p>Para extrair o 3º argumento ($\text{acc}$), usamos a projeção $U_3^3(x, y, \text{acc}) = \text{acc}$.</p>
+                    <p>Aplicando o sucessor: $h(x, y, \text{acc}) = S(U_3^3(x, y, \text{acc}))$.</p>
+                    <p>Pela Composição: $h = C(S; U_3^3)$.</p>
+
+                    <div class="interactive-box">
+                        <h4>Formalização Completa da Adição:</h4>
+                        $$add = R\Big(U_1^1,\, C(S; U_3^3)\Big)$$
+                        
+                        <div style="margin-top: 15px;">
+                            <strong>Teste Prático da Adição:</strong><br><br>
+                            $x =$ <input type="number" id="add-x" value="4" min="0" style="width: 70px;">
+                            $y =$ <input type="number" id="add-y" value="3" min="0" style="width: 70px;">
+                            <button class="btn-action" onclick="simularAdicao()">Calcular e Mostrar Passos</button>
+                            <div id="res-adicao" class="result" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Construção Aritmética Avançada -->
+            <section id="construcao-aritmica">
+                <h2>5. Multiplicação, Predecessor e Subtração Truncada</h2>
+                <div class="card">
+                    <h3>A. Multiplicação: $mult(x, y) = x \cdot y$</h3>
+                    <p>Multiplicar $x$ por $y$ é somar $x$ a si mesmo $y$ vezes.</p>
+                    $$\begin{cases}
+                    mult(x, 0) = 0 = Z(x) \\
+                    mult(x, y+1) = mult(x, y) + x = add\big(U_3^3(x, y, mult(x, y)),\, U_1^3(x, y, mult(x, y))\big)
+                    \end{cases}$$
+                    <p><strong>Formalmente:</strong> $mult = R\Big(Z,\, C(add;\, U_3^3,\, U_1^3)\Big)$.</p>
+
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h3>B. Função Antecessor / Predecessor: $pred(y)$</h3>
+                    <p>Nos naturais, o antecessor de 0 é definido como 0. Para $y+1$, o antecessor é $y$.</p>
+                    $$\begin{cases}
+                    pred(0) = 0 \\
+                    pred(y+1) = y = U_1^2(y, pred(y))
+                    \end{cases}$$
+                    <p><strong>Formalmente:</strong> $pred = R\big(0,\, U_1^2\big)$.</p>
+
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h3>C. Subtração Truncada (Monus): $x \dot{-} y = \max(0, x - y)$</h3>
+                    <p>Subtrair $y$ de $x$ é aplicar a função $pred$ repetidamente $y$ vezes a partir de $x$:</p>
+                    $$\begin{cases}
+                    sub(x, 0) = x = U_1^1(x) \\
+                    sub(x, y+1) = pred(sub(x, y)) = pred\big(U_3^3(x, y, sub(x, y))\big)
+                    \end{cases}$$
+                    <p><strong>Formalmente:</strong> $sub = R\Big(U_1^1,\, C(pred;\, U_3^3)\Big)$.</p>
+                </div>
+            </section>
+
+            <!-- 6. Predicados Lógicos -->
+            <section id="predicados">
+                <h2>6. Predicados Lógicos, Testes Condicionais e <code>if/else</code></h2>
+                <div class="card">
+                    <p>Como representar <code>True</code> (1), <code>False</code> (0) e operadores condicionais (<code>if-then-else</code>) de forma puramente funcional?</p>
+
+                    <div class="theory-box">
+                        <h3>Função Sinal ($\text{sg}$) e Sinal Inverso ($\overline{\text{sg}}$)</h3>
+                        <p>$\text{sg}(x) = \begin{cases} 0 & \text{se } x = 0 \\ 1 & \text{se } x > 0 \end{cases} \quad \implies \begin{cases} \text{sg}(0) = 0 \\ \text{sg}(y+1) = 1 = C(S; Z)(y, \text{sg}(y)) \end{cases}$</p>
+                        <p>$\overline{\text{sg}}(x) = \begin{cases} 1 & \text{se } x = 0 \\ 0 & \text{se } x > 0 \end{cases} = 1 \dot{-} \text{sg}(x) = sub(1, \text{sg}(x))$ (Equivalente ao operador NOT!)</p>
+                    </div>
+
+                    <h3>Construção de Testes de Igualdade e Comparação:</h3>
+                    <ul>
+                        <li><strong>Igualdade ($x == y$):</strong> $eq(x, y) = \overline{\text{sg}}((x \dot{-} y) + (y \dot{-} x))$. Devolve 1 se $x = y$, e 0 caso contrário.</li>
+                        <li><strong>Menor ou Igual ($x \le y$):</strong> $leq(x, y) = \overline{\text{sg}}(x \dot{-} y)$.</li>
+                        <li><strong>Expressão Condicional (<code>if P(x) then A else B</code>):</strong><br>
+                        $$\text{cond}(P, A, B) = P \cdot A + \overline{\text{sg}}(P) \cdot B$$
+                        Como multiplicação e adição são recursivas primitivas, qualquer condicional <code>if/else</code> é primitivo recursivo!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 7. Simulador Interativo -->
+            <section id="simulador-interativo">
+                <h2>7. Simulador Interativo de Recursão Primitiva</h2>
+                <div class="card">
+                    <p>Escolha uma função recursiva primitiva abaixo, informe as entradas e veja o desdobramento da execução passo a passo equivalente ao laço <code>for</code>:</p>
+
+                    <div class="interactive-box">
+                        <label><strong>Função:</strong></label>
+                        <select id="sim-fn" onchange="atualizarInterfaceSimulador()">
+                            <option value="add">Adição: add(x, y) = x + y</option>
+                            <option value="mult">Multiplicação: mult(x, y) = x * y</option>
+                            <option value="exp">Exponenciação: exp(x, y) = x^y</option>
+                            <option value="sub">Subtração Truncada: sub(x, y) = x ∸ y</option>
+                            <option value="fact">Fatorial: fact(y) = y!</option>
+                        </select>
+                        <br><br>
+                        <span id="input-x-span">
+                            $x =$ <input type="number" id="sim-x" value="3" min="0" style="width: 70px;">
+                        </span>
+                        $y =$ <input type="number" id="sim-y" value="4" min="0" style="width: 70px;">
+                        <button class="btn-action" onclick="executarSimulacaoGeral()">Executar Rastreio</button>
+
+                        <div id="sim-output" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. Limites e Ackermann -->
+            <section id="limites-ackermann">
+                <h2>8. Limites da Recursão Primitiva: A Função de Ackermann</h2>
+                <div class="card">
+                    <div class="theory-box">
+                        <h3>A Pergunta Histórica de David Hilbert (1928)</h3>
+                        <p><em>"Toda função total efetivamente computável por um algoritmo pode ser construída usando apenas Funções Iniciais, Composição e Recursão Primitiva?"</em></p>
+                        <p>A resposta é <strong>NÃO</strong>. Wilhelm Ackermann provou que existem funções computáveis totais que crescem tão absurdamente rápido que <strong>nenhum conjunto finito de laços <code>for</code> pré-delimitados consegue calculá-las</strong>.</p>
+                    </div>
+
+                    <h3>A Função de Ackermann-Péter $A(m, n)$:</h3>
+                    $$\begin{cases}
+                    A(0, n) = n + 1 \\
+                    A(m + 1, 0) = A(m, 1) \\
+                    A(m + 1, n + 1) = A\big(m,\, A(m + 1, n)\big)
+                    \end{cases}$$
+
+                    <p>Observe que a recursão de Ackermann chama a si mesma recursivamente <strong>dentro do próprio argumento</strong> (recursão aninhada dupla). Veja a taxa explosiva de crescimento:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>$m$</th>
+                                <th>Operação Equivalente</th>
+                                <th>$A(m, n)$</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$m = 0$</td>
+                                <td>Sucessor</td>
+                                <td>$n + 1$</td>
+                            </tr>
+                            <tr>
+                                <td>$m = 1$</td>
+                                <td>Adição</td>
+                                <td>$n + 2$</td>
+                            </tr>
+                            <tr>
+                                <td>$m = 2$</td>
+                                <td>Multiplicação</td>
+                                <td>$2n + 3$</td>
+                            </tr>
+                            <tr>
+                                <td>$m = 3$</td>
+                                <td>Exponenciação</td>
+                                <td>$2^{n+3} - 3$</td>
+                            </tr>
+                            <tr>
+                                <td>$m = 4$</td>
+                                <td>Tetração (Torre de potências)</td>
+                                <td>$2^{2^{\cdot^{\cdot^2}}} - 3$ (com $n+3$ andares de 2)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="alert-box">
+                        <strong>💥 Exemplo Prático de Explosão:</strong>
+                        <p>$A(4, 2) = 2^{65536} - 3 \approx 10^{19728}$ (um número com quase 20 mil dígitos!). O valor de $A(4, 3)$ excede em ordens de grandeza o número estimado de átomos em todo o universo observável ($10^{80}$).</p>
+                        <p><strong>Conclusão Teórica:</strong> A classe das Funções Recursivas Primitivas <strong>não é Turing-completa</strong>. Para alcançar todo o poder da computação e das Máquinas de Turing, precisamos de um mecanismo capaz de expressar <strong>laços indeterminados (<code>while</code>)</strong>. Esse é o tema do <strong>Módulo 3: O Operador de Minimização ($\mu$)</strong>.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. Exercícios e Desafios -->
+            <section id="exercicios-praticos">
+                <h2>9. Exercícios e Desafios Práticos</h2>
+                <div class="card">
+                    <h3>Exercício 1: Fatorial ($fact(y) = y!$)</h3>
+                    <p>Sabendo que $0! = 1$ e $(y+1)! = (y+1) \cdot y!$, deduza o esquema de recursão primitiva de $fact(y)$.</p>
+                    <button class="btn-action" onclick="toggleGabarito('gab-1')">Ver Gabarito Comentado</button>
+                    <div id="gab-1" class="gabarito">
+                        <p><strong>Resolução:</strong></p>
+                        <ul>
+                            <li>Caso Base ($y=0$): $fact(0) = 1 = S(0) = S(Z(0))$. É uma constante 1 ($k_0 = 1$).</li>
+                            <li>Passo ($y+1$): $fact(y+1) = (y+1) \cdot fact(y) = mult(S(y), fact(y))$.</li>
+                            <li>A função $h(y, \text{acc})$ recebe $(y, \text{acc})$ e calcula $mult(S(y), \text{acc})$.</li>
+                            <li>$h = C\Big(mult;\, C(S; U_1^2),\, U_2^2\Big)$.</li>
+                            <li>Portanto: $fact = R\Big(1,\, C(mult;\, C(S; U_1^2),\, U_2^2)\Big)$.</li>
+                        </ul>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h3>Exercício 2: Exponenciação ($exp(x, y) = x^y$)</h3>
+                    <p>Sabendo que $x^0 = 1$ e $x^{y+1} = x \cdot x^y$, escreva o esquema formal de $exp(x, y)$.</p>
+                    <button class="btn-action" onclick="toggleGabarito('gab-2')">Ver Gabarito Comentado</button>
+                    <div id="gab-2" class="gabarito">
+                        <p><strong>Resolução:</strong></p>
+                        <ul>
+                            <li>Caso Base: $g(x) = x^0 = 1 = C(S; Z)(x)$.</li>
+                            <li>Passo: $exp(x, y+1) = mult(exp(x, y), x) = mult(\text{acc}, x)$.</li>
+                            <li>$h(x, y, \text{acc}) = mult(U_3^3(x, y, \text{acc}),\, U_1^3(x, y, \text{acc}))$.</li>
+                            <li>$h = C(mult;\, U_3^3,\, U_1^3)$.</li>
+                            <li>Portanto: $exp = R\Big(C(S; Z),\, C(mult;\, U_3^3,\, U_1^3)\Big)$.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navegação por abas laterais
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('main section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+
+                link.classList.add('active');
+                const target = link.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+                
+                if (window.MathJax) {
+                    MathJax.typesetPromise();
+                }
+            });
+        });
+
+        function toggleGabarito(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise();
+            }
+        }
+
+        function simularAdicao() {
+            const x = parseInt(document.getElementById('add-x').value) || 0;
+            const y = parseInt(document.getElementById('add-y').value) || 0;
+            const div = document.getElementById('res-adicao');
+
+            let passos = `<strong>Rastreio Formal de $add(${x}, ${y})$:</strong><br><br>`;
+            let acc = x;
+            passos += `• Caso Base: $add(${x}, 0) = U_1^1(${x}) = ${acc}$<br>`;
+
+            for (let i = 0; i < y; i++) {
+                let prev = acc;
+                acc = acc + 1;
+                passos += `• Passo $y=${i+1}$: $add(${x}, ${i+1}) = S(add(${x}, ${i})) = S(${prev}) = ${acc}$<br>`;
+            }
+
+            passos += `<br><strong>Resultado Final:</strong> $add(${x}, ${y}) = ${acc}$`;
+            div.innerHTML = passos;
+            div.style.display = 'block';
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function atualizarInterfaceSimulador() {
+            const fn = document.getElementById('sim-fn').value;
+            const inputX = document.getElementById('input-x-span');
+            if (fn === 'fact') {
+                inputX.style.display = 'none';
+            } else {
+                inputX.style.display = 'inline';
+            }
+        }
+
+        function executarSimulacaoGeral() {
+            const fn = document.getElementById('sim-fn').value;
+            const x = parseInt(document.getElementById('sim-x').value) || 0;
+            const y = parseInt(document.getElementById('sim-y').value) || 0;
+            const out = document.getElementById('sim-output');
+
+            if (y > 15) {
+                out.innerHTML = `<span style="color:red;">Por favor, escolha $y \\le 15$ para manter a demonstração didática e rápida.</span>`;
+                if (window.MathJax) MathJax.typesetPromise();
+                return;
+            }
+
+            let html = `<h4>Execução Simulada (Mapeamento no Laço For):</h4>`;
+            html += `<table><thead><tr><th>Iteração ($i$)</th><th>Fórmula Formal</th><th>Valor do Acumulador ($acc$)</th></tr></thead><tbody>`;
+
+            let acc = 0;
+            if (fn === 'add') {
+                acc = x;
+                html += `<tr><td>Base ($i=0$)</td><td>$g(${x}) = ${x}$</td><td><strong>${acc}</strong></td></tr>`;
+                for (let i = 0; i < y; i++) {
+                    let old = acc;
+                    acc = acc + 1;
+                    html += `<tr><td>$i=${i+1}$</td><td>$S(${old})$</td><td><strong>${acc}</strong></td></tr>`;
+                }
+            } else if (fn === 'mult') {
+                acc = 0;
+                html += `<tr><td>Base ($i=0$)</td><td>$Z(${x}) = 0$</td><td><strong>${acc}</strong></td></tr>`;
+                for (let i = 0; i < y; i++) {
+                    let old = acc;
+                    acc = acc + x;
+                    html += `<tr><td>$i=${i+1}$</td><td>$add(${old}, ${x})$</td><td><strong>${acc}</strong></td></tr>`;
+                }
+            } else if (fn === 'exp') {
+                acc = 1;
+                html += `<tr><td>Base ($i=0$)</td><td>$k = 1$</td><td><strong>${acc}</strong></td></tr>`;
+                for (let i = 0; i < y; i++) {
+                    let old = acc;
+                    acc = acc * x;
+                    html += `<tr><td>$i=${i+1}$</td><td>$mult(${old}, ${x})$</td><td><strong>${acc}</strong></td></tr>`;
+                }
+            } else if (fn === 'sub') {
+                acc = x;
+                html += `<tr><td>Base ($i=0$)</td><td>$U_1^1(${x}) = ${x}$</td><td><strong>${acc}</strong></td></tr>`;
+                for (let i = 0; i < y; i++) {
+                    let old = acc;
+                    acc = Math.max(0, acc - 1);
+                    html += `<tr><td>$i=${i+1}$</td><td>$pred(${old})$</td><td><strong>${acc}</strong></td></tr>`;
+                }
+            } else if (fn === 'fact') {
+                acc = 1;
+                html += `<tr><td>Base ($i=0$)</td><td>$k = 1$</td><td><strong>${acc}</strong></td></tr>`;
+                for (let i = 0; i < y; i++) {
+                    let old = acc;
+                    acc = acc * (i + 1);
+                    html += `<tr><td>$i=${i+1}$</td><td>$mult(${i+1}, ${old})$</td><td><strong>${acc}</strong></td></tr>`;
+                }
+            }
+
+            html += `</tbody></table>`;
+            html += `<div class="result">Valor Final Retornado: ${acc}</div>`;
+            out.innerHTML = html;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+    </script>
+</body>
+</html>

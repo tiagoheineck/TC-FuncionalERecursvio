@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Fechamento: Equivalência entre Funções μ-Recursivas e MTs</title>
+    
+    <!-- Configuração do MathJax para fórmulas LaTeX -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #1a252f;
+            --secondary-color: #2c3e50;
+            --accent-color: #8e44ad;
+            --accent-hover: #732d91;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-border: #ddd;
+            --nav-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background-color: #111822;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .top-navbar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .top-navbar a:hover {
+            color: #9b59b6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4a148c 0%, #8e44ad 100%);
+            color: white;
+            text-align: center;
+            padding: 2.2rem 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.3rem;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 1.15rem;
+            opacity: 0.95;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1250px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        nav {
+            width: 270px;
+            background: var(--nav-bg);
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--light-border);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.03);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            margin-bottom: 8px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            display: block;
+            padding: 10px 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.92rem;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        main {
+            flex: 1;
+            padding: 2.2rem;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .interactive-box {
+            background: #fbf5fc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .theory-box {
+            background: #fdf8e2;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #f1c40f;
+        }
+
+        .human-box {
+            background: #f3e8f9;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #8e44ad;
+            color: #3b0d59;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .alert-box {
+            background: #fdf2f2;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        input[type="number"], input[type="text"], select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        button.btn-action {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            padding: 12px;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px dashed var(--accent-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        th {
+            background-color: #f4f6f7;
+            color: var(--primary-color);
+        }
+
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.95rem;
+        }
+        
+        code {
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+        }
+
+        .gabarito {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        .hierarchy-tree {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: monospace;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                flex-direction: column;
+            }
+            nav {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--light-border);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Unified Nav -->
+    <div class="top-navbar">
+        <div>
+            <a href="index.html">🏠 Menu Principal</a>
+            <a href="material-interativo.html">1️⃣ Módulo 1 (Básicas & Composição)</a>
+            <a href="modulo2-material.html">2️⃣ Módulo 2 (Recursão Primitiva & For)</a>
+            <a href="modulo3-material.html">3️⃣ Módulo 3 (Minimização & While)</a>
+            <a href="modulo-fechamento-material.html" style="color: #9b59b6; font-weight: bold;">🏁 Fechamento & MTs</a>
+        </div>
+        <div>
+            <a href="modulo-fechamento-slides.html" target="_blank">📽️ Slides do Fechamento</a>
+            <a href="questoes-enade.html">📝 Questões ENADE</a>
+        </div>
+    </div>
+
+    <header>
+        <h1>Módulo de Fechamento</h1>
+        <p>Equivalência Universal entre Funções $\mu$-Recursivas e Máquinas de Turing: Expressividade Turing-Completa</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-target="tese-church-turing">1. A Tese de Church-Turing</a></li>
+                <li><a href="#" data-target="teorema-equivalencia">2. O Teorema da Equivalência Universal</a></li>
+                <li><a href="#" data-target="mecanismo-aritmetizacao">3. A Ponte: Aritmetização de Gödel & MTs</a></li>
+                <li><a href="#" data-target="forma-normal-kleene">4. Teorema da Forma Normal de Kleene</a></li>
+                <li><a href="#" data-target="hierarquia-computabilidade">5. A Hierarquia Completa de Expressividade</a></li>
+                <li><a href="#" data-target="tabela-universal">6. Tabela Comparativa de Modelos</a></li>
+                <li><a href="#" data-target="indecidibilidade">7. O Problema da Parada no Modelo Funcional</a></li>
+                <li><a href="#" data-target="simulador-hierarquia">8. Visualizador Interativo da Hierarquia</a></li>
+                <li><a href="#" data-target="sintese-final">9. Síntese e Desafios Finais</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- 1. Tese de Church-Turing -->
+            <section id="tese-church-turing" class="active">
+                <h2>1. A Tese de Church-Turing</h2>
+                <div class="card">
+                    <h3>O Encontro dos Grandes Pioneiros da Computação</h3>
+                    <p>Na década de 1930, diferentes matemáticos e lógicos tentaram formalizar a noção intuitiva de <em>"algoritmo"</em> ou <em>"função efetivamente computável"</em> de maneiras completamente independentes:</p>
+
+                    <div class="theory-box">
+                        <ul>
+                            <li><strong>Alan Turing (1936):</strong> Máquinas de Turing (modelo mecanicista com fita, cabeça de leitura e estados).</li>
+                            <li><strong>Alonzo Church (1936):</strong> Cálculo Lambda ($\lambda$-calculus, baseado em abstração e aplicação de funções).</li>
+                            <li><strong>Kurt Gödel & Stephen Kleene (1936):</strong> Funções Gerais $\mu$-Recursivas (modelo puramente aritmético com composição, recursão primitiva e minimização).</li>
+                            <li><strong>Emil Post (1936):</strong> Sistemas de Produção / Máquinas de Post.</li>
+                        </ul>
+                        <p><strong>A Descoberta Extraordinária:</strong> Poucos meses depois, provou-se matematicamente que <strong>todos esses formalismos descrevem exatamente o mesmo conjunto de funções</strong>!</p>
+                    </div>
+
+                    <div class="interactive-box">
+                        <strong>📌 A Tese de Church-Turing:</strong>
+                        <p><em>"Qualquer processo de computação que possa ser realizado de forma mecânica/algorítmica por uma mente humana ou computador digital pode ser calculado por uma Máquina de Turing ou por uma Função $\mu$-Recursiva."</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Teorema da Equivalência -->
+            <section id="teorema-equivalencia">
+                <h2>2. O Teorema da Equivalência Universal</h2>
+                <div class="card">
+                    <p>O teorema central que unifica a Teoria da Computação Funcional com a Teoria das Máquinas de Turing afirma que:</p>
+
+                    <div class="theory-box">
+                        <h3>Teorema da Equivalência (Kleene — Turing)</h3>
+                        $$\text{Classe das Funções } \mu\text{-Recursivas} \equiv \text{Classe das Funções Computáveis por Máquinas de Turing}$$
+                        <p>A prova divide-se em duas direções simétricas:</p>
+                        <ol>
+                            <li><strong>$(\mu\text{-Rec} \subseteq \text{MT})$:</strong> Toda função $\mu$-recursiva pode ser simulada por uma Máquina de Turing. (Fácil: construímos MTs para $Z, S, U$ e subrotinas para composição, laço contado e laço de busca).</li>
+                            <li><strong>$(\text{MT} \subseteq \mu\text{-Rec})$:</strong> Toda Máquina de Turing pode ser convertida em uma única função $\mu$-recursiva.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Mecanismo de Aritmetização -->
+            <section id="mecanismo-aritmetizacao">
+                <h2>3. A Ponte: Aritmetização de Gödel e Simulação Aritmética de MTs</h2>
+                <div class="card">
+                    <h3>Como transformar fita, estado e transições em números?</h3>
+                    <p>Para codificar uma Máquina de Turing inteira em aritmética pura sobre os Naturais ($\mathbb{N}$), Gödel e Kleene utilizaram três ideias geniais:</p>
+
+                    <div class="theory-box">
+                        <h4>1. Numeração de Gödel (Codificação de Configurações):</h4>
+                        <p>A configuração instantânea de uma MT $(\text{estado } q, \text{fita à esquerda } w_L, \text{símbolo atual } a, \text{fita à direita } w_R)$ pode ser empacotada em um único número natural $c \in \mathbb{N}$ usando fatoração em números primos ou funções de emparelhamento de Cantor:</p>
+                        $$c = 2^q \cdot 3^{w_L} \cdot 5^a \cdot 7^{w_R}$$
+                    </div>
+
+                    <div class="theory-box">
+                        <h4>2. A Função de Passo da MT é Recursiva Primitiva:</h4>
+                        <p>A transição de um estado para o próximo $Step(c)$ envolve apenas ler o símbolo atual, consultar a tabela finita de transições $\delta$, mudar de estado e mover a fita. Como a tabela de transição é estática e finita, a função:</p>
+                        $$NextConfig(c) : \mathbb{N} \to \mathbb{N}$$
+                        é comprovadamente <strong>Recursiva Primitiva</strong> (sem laços indeterminados)!</p>
+                    </div>
+
+                    <div class="alert-box">
+                        <h4>3. O Laço da MT até a Parada é o Operador $\mu$:</h4>
+                        <p>A simulação de $t$ passos da máquina $Run(c_0, t)$ é uma recursão primitiva simples (um laço <code>for</code> de $t$ passos). Mas quando a máquina para? Quando o estado atual for de parada ($q_{accept}$ ou $q_{reject}$). O tempo exato de parada é obtido com <strong>uma única minimização</strong>:</p>
+                        $$t_{\text{parada}} = \mu t \big[IsHalt(Run(c_0, t)) = 0\big]$$
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Teorema da Forma Normal de Kleene -->
+            <section id="forma-normal-kleene">
+                <h2>4. O Teorema da Forma Normal de Kleene</h2>
+                <div class="card">
+                    <p>Um dos resultados mais elegantes de toda a Ciência da Computação teórica:</p>
+
+                    <div class="theory-box">
+                        <h3>Teorema da Forma Normal de Kleene (1936)</h3>
+                        <p>Existe um predicado recursivo primitivo fixo $T(e, \vec{x}, y)$ (chamado <em>Predicado $T$ de Kleene</em>) e uma função recursiva primitiva fixa $U(y)$ (função de extração) tais que <strong>qualquer função computável / $\mu$-recursiva $f(\vec{x})$</strong> com código de programa $e$ pode ser expressa como:</p>
+                        
+                        $$f(\vec{x}) = U\Big(\mu y \big[T(e, \vec{x}, y) = 0\big]\Big)$$
+                    </div>
+
+                    <div class="human-box">
+                        🗣️ <strong>Versão Humana (O que essa equação genial realmente significa?):</strong><br>
+                        <em>"Qualquer software do mundo — de uma simples calculadora até um sistema operacional ou rede neural — pode ser descrito em 3 etapas:"</em>
+                        <ol style="margin-top: 8px;">
+                            <li><strong>$T(e, \vec{x}, y)$ (O Validador):</strong> Uma função recursiva primitiva (simples laço <code>for</code>) que testa se $y$ é o histórico de um cômputo válido do programa $e$ sobre a entrada $\vec{x}$.</li>
+                            <li><strong>$\mu y [\dots]$ (O Laço Principal):</strong> <strong>O ÚNICO laço <code>while</code></strong> do programa todo, que busca em ordem crescente o histórico válido $y$ que atinge o estado de parada.</li>
+                            <li><strong>$U(y)$ (O Extrator):</strong> Outra função recursiva primitiva (simples <code>for</code>) que pega o histórico vencedor $y$ e extrai o valor da resposta final.</li>
+                        </ol>
+                        💡 <strong>Conclusão Filosófica e Prática:</strong> Você nunca precisa de múltiplos laços <code>while</code> aninhados para alcançar a Turing-completude. <strong>Um único laço <code>while</code> externo basta!</strong>
+                    </div>
+
+                    <h3>O que isso significa na Prática da Computação?</h3>
+                    <ul>
+                        <li>$e$: É o código-fonte compilado do programa (um número natural que codifica a MT ou função).</li>
+                        <li>$T(e, \vec{x}, y)$: Verifica se $y$ é a codificação válida de uma computação completa e bem-sucedida do programa $e$ sobre a entrada $\vec{x}$. ($T$ é 100% Recursivo Primitivo!).</li>
+                        <li>$\mu y [\dots]$: É <strong>o único laço <code>while</code></strong> que busca o histórico de execução válido.</li>
+                        <li>$U(y)$: Extrai o valor final do resultado a partir do histórico $y$ ($U$ é 100% Recursivo Primitivo!).</li>
+                    </ul>
+
+                    <div class="interactive-box">
+                        <strong>💡 Equivalência com o Teorema Estruturado de Böhm-Jacopini:</strong>
+                        <p>Qualquer programa de computador imaginável (de sistemas operacionais a simuladores físicos) pode ser reescrito com <strong>exatamente UM laço <code>while</code> externo</strong> envolvendo comandos finitos contados (laços <code>for</code> e condicionais <code>if</code>)!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Hierarquia de Computabilidade -->
+            <section id="hierarquia-computabilidade">
+                <h2>5. A Hierarquia Completa de Expressividade</h2>
+                <div class="card">
+                    <p>A organização formal dos níveis de expressividade da computação funcional:</p>
+
+                    <div class="hierarchy-tree">
+                        🌐 <strong>TODO O UNIVERSO DAS FUNÇÕES MATEMÁTICAS $\mathbb{N} \to \mathbb{N}$</strong> (Não-Enumerável: $\aleph_1$)<br>
+                        │<br>
+                        ├── 🛑 <strong>Funções Não-Computáveis / Indecidíveis</strong> (Ex: Problema da Parada $K$, Castor Ocupado / Busy Beaver)<br>
+                        │<br>
+                        └── 💻 <strong>FUNÇÕES COMPUTÁVEIS (Turing-Completas / $\mu$-Recursivas)</strong> (Enumerável: $\aleph_0$)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;├── 🌀 <strong>Funções $\mu$-Recursivas Parciais</strong> (Podem divergir / $\bot$ - laço <code>while</code> sem parada)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;└── 🟢 <strong>Funções $\mu$-Recursivas Totais</strong> (Sempre terminam)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 🚀 <strong>Função de Ackermann</strong> (Cresce mais rápido que qualquer laço <code>for</code>)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📦 <strong>Funções Recursivas Primitivas (PR)</strong> (Equivalentes ao laço <code>for</code>)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 🔹 <strong>Funções Básicas + Composição Pura</strong> ($Z, S, U_i^n, C$)
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Tabela Universal -->
+            <section id="tabela-universal">
+                <h2>6. Tabela Comparativa Universal de Modelos</h2>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Conceito / Estrutura</th>
+                                <th>Máquinas de Turing (Mecanicista)</th>
+                                <th>Funções Recursivas (Aritmético/Funcional)</th>
+                                <th>Programação Moderna (Imperativa/Funcional)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Elemento Atômico</strong></td>
+                                <td>Símbolo na fita, cabeçote, estado inicial $q_0$</td>
+                                <td>Funções Zero ($Z$), Sucessor ($S$), Projeção ($U_i^n$)</td>
+                                <td>Literais, variáveis atômicas, incremento <code>x++</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sequência / Pipeline</strong></td>
+                                <td>Mudança sequencial de estados $q_i \to q_j$</td>
+                                <td>Operador de Composição ($C$)</td>
+                                <td>Chamadas encadeadas de função: <code>g(h(x))</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Repetição Delimitada</strong></td>
+                                <td>Movimentos finitos delimitados na fita</td>
+                                <td>Recursão Primitiva ($R$)</td>
+                                <td>Laço contado: <code>for (int i=0; i&lt;N; i++)</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Repetição Indeterminada</strong></td>
+                                <td>Loop da máquina até estado de parada $q_{halt}$</td>
+                                <td>Operador de Minimização ($\mu$)</td>
+                                <td>Laço condicional: <code>while (cond)</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Não-Terminação / Travamento</strong></td>
+                                <td>Cabeçote movimenta indefinidamente na fita</td>
+                                <td>Divergência da busca $\mu$ ($\bot$)</td>
+                                <td>Loop infinito de execução: <code>while(true);</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Poder Computacional</strong></td>
+                                <td>Turing-Completo</td>
+                                <td>Turing-Completo ($\mu$-Recursivo)</td>
+                                <td>Turing-Completo (C, Python, Java, Haskell)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 7. O Problema da Parada -->
+            <section id="indecidibilidade">
+                <h2>7. O Problema da Parada no Modelo Funcional</h2>
+                <div class="card">
+                    <div class="alert-box">
+                        <h3>A Impossibilidade do Predicado da Totalidade</h3>
+                        <p>Na teoria das Máquinas de Turing, o <strong>Problema da Parada (Halting Problem)</strong> demonstra que é impossível construir um algoritmo universal que decida se qualquer MT arbitrária vai parar para uma dada entrada.</p>
+                        <p>No formalismo das <strong>Funções $\mu$-Recursivas</strong>, esse resultado manifesta-se de forma idêntica:</p>
+                        <p><strong>Teorema:</strong> O conjunto dos índices de funções $\mu$-recursivas que são <em>totais</em> (que nunca entram em loop infinito) é <strong>indecidível (não-recursivo)</strong>.</p>
+                    </div>
+
+                    <div class="theory-box">
+                        <h4>Por que isso importa para nós desenvolvedores?</h4>
+                        <p>Não existe nenhum compilador ou linter estático que possa analisar qualquer código arbitrário e garantir 100% de certeza se o programa vai terminar ou travar em loop infinito. A única forma garantida de término é restringir a linguagem para a <strong>Recursão Primitiva</strong> (linguagens de tipos totais, como Coq e Agda)!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. Simulador da Hierarquia -->
+            <section id="simulador-hierarquia">
+                <h2>8. Visualizador Interativo da Hierarquia e Expressividade</h2>
+                <div class="card">
+                    <p>Clique nas classes abaixo para inspecionar os operadores permitidos, garantias de término e exemplos canônicos:</p>
+
+                    <div class="interactive-box">
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                            <button class="btn-action" onclick="mostrarDetalheClasse('basicas')">1. Básicas + Composição</button>
+                            <button class="btn-action" onclick="mostrarDetalheClasse('pr')" style="background-color: #27ae60;">2. Recursivas Primitivas (PR)</button>
+                            <button class="btn-action" onclick="mostrarDetalheClasse('total-mu')" style="background-color: #2980b9;">3. μ-Recursivas Totais</button>
+                            <button class="btn-action" onclick="mostrarDetalheClasse('parcial-mu')" style="background-color: #8e44ad;">4. μ-Recursivas Parciais (Turing)</button>
+                            <button class="btn-action" onclick="mostrarDetalheClasse('indecidivel')" style="background-color: #c0392b;">5. Não-Computáveis</button>
+                        </div>
+
+                        <div id="detalhe-classe" class="result" style="background: #fff; padding: 20px;">
+                            Selecione um botão acima para explorar os detalhes teóricos e operacionais da classe.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. Síntese Final -->
+            <section id="sintese-final">
+                <h2>9. Síntese Final do Curso de Paradigma Funcional</h2>
+                <div class="card">
+                    <h3>Parabéns! Você completou a Trilha Teórica Funcional!</h3>
+                    <p>Vamos recapitular o edifício conceitual construído ao longo dos 3 módulos e fechamento:</p>
+
+                    <ol>
+                        <li><strong>Módulo 1 (Fundamentos):</strong> Mostrou que computação pode ser entendida sem fitas nem registradores, apenas com avaliação de expressões a partir de $Z$, $S$ e $U_i^n$, encadeadas por <strong>Composição ($C$)</strong>.</li>
+                        <li><strong>Módulo 2 (Recursão Primitiva):</strong> Introduziu a repetição estruturada com contador pré-fixado ($R$), mapeada exatamente para laços <code>for</code>. Demonstrou a totalidade de todas as funções aritméticas clássicas e identificou seu limite com a Função de Ackermann.</li>
+                        <li><strong>Módulo 3 (Minimização):</strong> Introduziu a busca linear não-limitada ($\mu$), correspondente aos laços <code>while</code>, trazendo à tona as funções parciais e loops infinitos ($\bot$).</li>
+                        <li><strong>Módulo de Fechamento:</strong> Provou que $\{Z, S, U\} + \{C, R, \mu\}$ alcança a <strong>Turing-Completude Universal</strong> através do Teorema da Forma Normal de Kleene e da Aritmetização de Gödel.</li>
+                    </ol>
+
+                    <div class="interactive-box" style="text-align: center;">
+                        <p style="font-size: 1.15rem;"><strong>Pronto para consolidar seu aprendizado?</strong></p>
+                        <a href="questoes-enade.html" style="text-decoration: none;">
+                            <button class="btn-action" style="font-size: 1.1rem; padding: 12px 25px; background-color: #8e44ad;">
+                                📝 Acessar Simulado Geral Estilo ENADE
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navegação por abas laterais
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('main section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+
+                link.classList.add('active');
+                const target = link.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+                
+                if (window.MathJax) {
+                    MathJax.typesetPromise();
+                }
+            });
+        });
+
+        function mostrarDetalheClasse(tipo) {
+            const out = document.getElementById('detalhe-classe');
+            let content = '';
+
+            if (tipo === 'basicas') {
+                content = `
+                    <h3 style="color: #2c3e50; margin-top:0;">1. Funções Básicas + Composição Pura</h3>
+                    <p><strong>Operadores:</strong> $Z(x)=0$, $S(x)=x+1$, $U_i^n(x_1,\dots,x_n)=x_i$ e Composição $C(g; h_1,\dots,h_k)$.</p>
+                    <p><strong>Garantia:</strong> Totais, tempo de execução extremamente baixo (linear fixo).</p>
+                    <p><strong>Limitação:</strong> Não conseguem fazer adições dinâmicas nem laços de qualquer tamanho variável.</p>
+                    <p><strong>Exemplos:</strong> $f(x)=3$, $f(x,y)=x+2$, troca de variáveis $f(x,y)=g(y,x)$.</p>
+                `;
+            } else if (tipo === 'pr') {
+                content = `
+                    <h3 style="color: #27ae60; margin-top:0;">2. Funções Recursivas Primitivas (PR)</h3>
+                    <p><strong>Operadores:</strong> Básicas + Composição ($C$) + <strong>Recursão Primitiva ($R$)</strong>.</p>
+                    <p><strong>Equivalente Imperativo:</strong> Laços contados finitos <code>for (int i=0; i&lt;y; i++)</code>.</p>
+                    <p><strong>Garantia:</strong> <strong>100% TOTAIS</strong> (sempre terminam, sem possibilidade de loop infinito).</p>
+                    <p><strong>Exemplos:</strong> Adição, Multiplicação, Fatorial, Exponenciação, Predicados lógicos, Divisão com resto, Números Primos.</p>
+                `;
+            } else if (tipo === 'total-mu') {
+                content = `
+                    <h3 style="color: #2980b9; margin-top:0;">3. Funções $\mu$-Recursivas Totais (Computáveis)</h3>
+                    <p><strong>Operadores:</strong> Básicas + $C$ + $R$ + Minimização ($\mu$) onde a busca <strong>sempre converge</strong>.</p>
+                    <p><strong>Exemplo Estrela:</strong> <strong>Função de Ackermann $A(m,n)$</strong> e interpretadores de linguagens de programação total.</p>
+                    <p><strong>Propriedade:</strong> Totalmente computáveis, mas ultrapassam o limite de complexidade de qualquer laço <code>for</code> pré-calculado.</p>
+                `;
+            } else if (tipo === 'parcial-mu') {
+                content = `
+                    <h3 style="color: #8e44ad; margin-top:0;">4. Funções $\mu$-Recursivas Parciais (Turing-Completude)</h3>
+                    <p><strong>Operadores:</strong> Básicas + $C$ + $R$ + <strong>Minimização Não-Limitada ($\mu$)</strong>.</p>
+                    <p><strong>Equivalente:</strong> Laço <code>while (cond)</code> sem limite pré-definido. Equivalente exato a <strong>Máquinas de Turing</strong>.</p>
+                    <p><strong>Propriedade:</strong> Podem divergir ($\bot$). Modelam todo algoritmo computável na história.</p>
+                    <p><strong>Forma Normal:</strong> Toda função pode ser escrita como $U(\mu y [T(e, x, y)])$ (Forma Normal de Kleene).</p>
+                `;
+            } else if (tipo === 'indecidivel') {
+                content = `
+                    <h3 style="color: #c0392b; margin-top:0;">5. Funções Não-Computáveis / Indecidíveis</h3>
+                    <p><strong>Definição:</strong> Funções matemáticas que <strong>nenhum computador ou modelo formal consegue calcular</strong>.</p>
+                    <p><strong>Exemplos:</strong> Função do Problema da Parada $HALT(e, x)$, Função Castor Ocupado (Busy Beaver $\Sigma(n)$), Equivalência de Programas.</p>
+                    <p><strong>Conclusão Filosófica:</strong> O conjunto das funções matemáticas é não-enumerável ($2^{\aleph_0}$), mas o conjunto de todos os programas possíveis é enumerável ($\aleph_0$). Logo, a imensa maioria das funções matemáticas é para sempre inalcançável por algoritmos!</p>
+                `;
+            }
+
+            out.innerHTML = content;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+    </script>
+</body>
+</html>

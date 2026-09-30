@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slides - Módulo 3: Minimização (μ) & Laços While</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/simple.min.css" id="theme">
+
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: #b94a00;
+            text-transform: none;
+        }
+        .reveal h2 { font-size: 1.35em; border-bottom: 2px solid #e67e22; padding-bottom: 5px; margin-bottom: 15px;}
+        .reveal h3 { font-size: 1.05em; color: #2c3e50; }
+        
+        .reveal p, .reveal li {
+            font-size: 0.85em;
+            line-height: 1.3;
+            text-align: left;
+        }
+        
+        .reveal ul { margin-bottom: 10px; }
+        .reveal li { margin-bottom: 5px; }
+
+        .theory-box {
+            background: #fff9e6;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            font-size: 0.8em;
+            margin: 12px 0;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .human-box {
+            background: #fdf6ec;
+            border-left: 5px solid #e67e22;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            margin: 12px 0;
+            text-align: left;
+            color: #7d3c00;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+        }
+        
+        .interactive-box {
+            background: #f4f6f8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #e67e22;
+            margin-top: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .interactive-box input {
+            font-size: 1em;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .interactive-box button {
+            font-size: 0.9em;
+            padding: 7px 14px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #b94a00;
+        }
+        
+        .reveal table {
+            font-size: 0.72em;
+            width: 100%;
+        }
+
+        .reveal table th {
+            background-color: #f4f6f7;
+            color: #2c3e50;
+        }
+
+        /* Fixed pre and code indentation styles for Reveal.js */
+        pre {
+            background: #1e1e1e !important;
+            border-radius: 6px !important;
+            padding: 0 !important;
+            margin: 10px 0 !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+            width: 100% !important;
+        }
+
+        pre code {
+            background: transparent !important;
+            color: #dcdcdc !important;
+            padding: 12px 16px !important;
+            font-size: 0.75em !important;
+            text-align: left !important;
+            overflow-x: auto !important;
+            white-space: pre !important;
+            font-family: Consolas, Monaco, 'Courier New', monospace !important;
+            display: block !important;
+            tab-size: 4 !important;
+            line-height: 1.4 !important;
+        }
+
+        .reveal .slides section {
+            top: 0 !important;
+            padding: 15px 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .top-banner {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            z-index: 99;
+        }
+        .top-banner a {
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-banner">
+        <a href="index.html">🏠 Menu Principal</a> | <a href="modulo3-material.html">📖 Apostila Módulo 3</a>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section style="text-align: center;">
+                <h1 style="font-size: 2.2em; color: #b94a00;">Teoria da Computação</h1>
+                <h2 style="border: none; color: #e67e22; font-size: 1.3em;">Módulo 3 — Paradigma Funcional III</h2>
+                <h3 style="font-size: 1.1em; color: #555;">Minimização ($\mu$) mapeada para Laços Indeterminados (<code>while</code>)</h3>
+                <p style="text-align: center; margin-top: 40px; font-size: 0.85em; color: #7f8c8d;">
+                    Prof. Tiago Heineck • IFC<br>
+                    Use as setas [ &rarr; ] ou [ Espaço ] para navegar
+                </p>
+            </section>
+
+            <!-- Slide 2: A Necessidade do Laço While -->
+            <section>
+                <h2>Por que Precisamos da Minimização ($\mu$)?</h2>
+                <div class="theory-box">
+                    <strong>Limitação dos Laços Contados (<code>for</code>):</strong><br>
+                    No Módulo 2, o número de iterações precisava ser fixado antes do laço começar. Mas e quando queremos fazer uma <strong>busca onde o tempo de parada é desconhecido</strong>?
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Problemas do Mundo Real):</strong><br>
+                    <em>"Encontre a raiz de uma equação complexa."</em><br>
+                    <em>"Busque o menor número primo com mais de 100 dígitos."</em><br>
+                    <em>"Execute um programa e espere ele parar (se é que vai parar!)."</em><br>
+                    👉 Não sabemos de antemão quantas voltas serão dadas! Precisamos do laço <code>while</code>.
+                </div>
+            </section>
+
+            <!-- Slide 3: Definição Formal de Mu -->
+            <section>
+                <h2>O Operador $\mu$ (Minimização Não-Limitada)</h2>
+                <div class="theory-box">
+                    Dada uma função $g(\vec{x}, y)$, a função de minimização:
+                    $$f(\vec{x}) = \mu y \big[g(\vec{x}, y) = 0\big]$$
+                    retorna o <strong>menor natural $y \in \mathbb{N}$</strong> tal que $g(\vec{x}, y) = 0$.
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler e entender o $\mu$):</strong><br>
+                    <em>"Comece testando $y = 0, 1, 2, 3, \dots$ em ordem crescente. O <strong>primeiro $y$</strong> que fizer a expressão $g(\vec{x}, y)$ zerar é o resultado que você procura. Se nenhum $y$ zerar, continue rodando para sempre."</em>
+                </div>
+            </section>
+
+            <!-- Slide 4: Mapeamento While -->
+            <section>
+                <h2>Mapeamento: $\mu \leftrightarrow$ Laço <code>while</code></h2>
+                <div style="display: flex; gap: 15px; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <p style="font-weight: bold; margin-bottom: 5px;">Formalismo Funcional:</p>
+                        <div class="theory-box" style="margin-top:0;">
+                            $$f(x) = \mu y \big[g(x, y) = 0\big]$$
+                        </div>
+                    </div>
+                    <div style="flex: 1.2;">
+                        <p style="font-weight: bold; margin-bottom: 5px;">Equivalente Imperativo (Python):</p>
+                        <pre><code class="language-python">def f(x):
+    y = 0
+    # Laço Indeterminado (while)
+    while g(x, y) != 0:
+        y += 1
+    return y</code></pre>
+                    </div>
+                </div>
+                <div class="human-box">
+                    💡 <strong>Intuição de Código:</strong> O operador $\mu$ nada mais é do que um contador que começa em 0 e avança linha por linha no <code>while</code> até encontrar a resposta.
+                </div>
+            </section>
+
+            <!-- Slide 5: Funções Parciais e Divergência -->
+            <section>
+                <h2>O Nascimento das Funções Parciais ($\bot$)</h2>
+                <div class="theory-box" style="border-left-color: #e74c3c;">
+                    <strong>O que acontece se a condição $g(\vec{x}, y) = 0$ NUNCA for satisfeita?</strong><br>
+                    O laço <code>while</code> incrementa $y$ infinitamente ($y \to \infty$).
+                    A computação <strong>diverge</strong> ($f(\vec{x}) \uparrow$ ou $f(\vec{x}) = \bot$).
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (A Quebra da Totalidade):</strong><br>
+                    <em>"No Módulo 2 (laço for), todo programa terminava com 100% de certeza (Total). Com o operador $\mu$ (laço while), ganhamos o poder de resolver qualquer problema do mundo, mas pagamos o preço de que o programa pode <strong>travar em loop infinito</strong> ($\bot$)."</em>
+                </div>
+            </section>
+
+            <!-- Slide 6: Minimização Limitada vs Ilimitada -->
+            <section>
+                <h2>Minimização Limitada vs Ilimitada</h2>
+                <table style="font-size: 0.72em;">
+                    <thead>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Minimização Limitada ($\mu y \le z$)</th>
+                            <th>Minimização Ilimitada ($\mu y$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Equivalente Imperativo</strong></td>
+                            <td><code>for y in range(z+1): if P: break</code></td>
+                            <td><code>while not P: y += 1</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Garantia de Término</strong></td>
+                            <td>Sempre termina (Total)</td>
+                            <td>Pode não terminar (Parcial / $\bot$)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Classe de Poder</strong></td>
+                            <td>Permanece <strong>Recursiva Primitiva</strong></td>
+                            <td>Atinge <strong>$\mu$-Recursão Completa (Turing)</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="human-box" style="margin-top: 15px;">
+                    🗣️ <em>Se tem teto $z$, é um <code>for</code> disfarçado. Se não tem teto, é um <code>while</code> real com poder universal!</em>
+                </div>
+            </section>
+
+            <!-- Slide 7: Simulador do Laço While -->
+            <section>
+                <h2>Simulador Interativo do Operador $\mu$</h2>
+                <div class="interactive-box">
+                    <p>Encontrar o menor $y$ tal que $y^2 \ge x$ ($\mu y [x \dot{-} y^2 = 0]$):</p>
+                    $x =$ <input type="number" id="s3-x" value="20" min="0">
+                    <button onclick="calcSlideMu()">Executar Busca ($\mu$)</button>
+                    <div id="slide-res-mu" class="result" style="font-size: 0.85em; margin-top: 15px;"></div>
+                </div>
+                <script>
+                    function calcSlideMu() {
+                        const x = parseInt(document.getElementById('s3-x').value) || 0;
+                        let out = `Iniciando busca linear $y=0, 1, 2, \\dots$<br>`;
+                        let y = 0;
+                        while(y * y < x && y <= 20) {
+                            out += `• Testando $y=${y} \\implies y^2 = ${y*y} < ${x}$ (Continua $y \\to ${y+1}$)<br>`;
+                            y++;
+                        }
+                        out += `<strong style="color:#e67e22;">• Parada: $y=${y} \\implies y^2 = ${y*y} \\ge ${x}$. Retorno final: ${y}</strong>`;
+                        const target = document.getElementById('slide-res-mu');
+                        target.innerHTML = out;
+                        if(window.MathJax) MathJax.typesetPromise();
+                    }
+                </script>
+            </section>
+
+            <!-- Slide 8: Resumo da Trilogia Funcional & Turing-Completo -->
+            <section>
+                <h2>Resumo & Turing-Completude</h2>
+                <ul style="font-size: 0.8em; margin-bottom: 8px;">
+                    <li><strong>Módulo 1 ($Z, S, U + C$):</strong> Pipelines e encadeamentos (<code>g(h(x))</code>).</li>
+                    <li><strong>Módulo 2 (Recursão Primitiva $R$):</strong> Laços <code>for</code> contados (100% Total).</li>
+                    <li><strong>Módulo 3 (Minimização $\mu$):</strong> Laços <code>while</code> indeterminados (Parcial / $\bot$).</li>
+                </ul>
+                
+                <div class="human-box" style="margin: 8px 0; padding: 8px 14px; font-size: 0.76em;">
+                    💡 <strong>O que significa ser "Turing-Completo"?</strong><br>
+                    Significa que o sistema atingiu o <strong>poder computacional máximo</strong>: ele é capaz de computar <strong>qualquer algoritmo ou cálculo</strong> que um computador real (C, Python, Java) ou uma Máquina de Turing teórica consegue processar!
+                </div>
+
+                <div class="theory-box" style="text-align: center; margin-top: 6px; padding: 6px 12px; font-size: 0.78em;">
+                    🏁 <strong>Fechamento:</strong> O conjunto $\{Z, S, U\} + \{C, R, \mu\}$ é <strong>Turing-Completo</strong>!
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            transition: 'slide',
+            plugins: [ RevealMath.MathJax3 ]
+        });
+    </script>
+</body>
+</html>

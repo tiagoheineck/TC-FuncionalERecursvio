@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slides - Módulo de Fechamento: Equivalência MTs e Funções μ-Recursivas</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/simple.min.css" id="theme">
+
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: #4a148c;
+            text-transform: none;
+        }
+        .reveal h2 { font-size: 1.3em; border-bottom: 2px solid #8e44ad; padding-bottom: 4px; margin-bottom: 12px;}
+        .reveal h3 { font-size: 1.0em; color: #2c3e50; }
+        
+        .reveal p, .reveal li {
+            font-size: 0.82em;
+            line-height: 1.28;
+            text-align: left;
+        }
+        
+        .reveal ul { margin-bottom: 8px; }
+        .reveal li { margin-bottom: 4px; }
+
+        .theory-box {
+            background: #fbf5fc;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border-left: 5px solid #8e44ad;
+            font-size: 0.78em;
+            margin: 8px 0;
+            text-align: left;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+
+        .human-box {
+            background: #f3e8f9;
+            border-left: 5px solid #8e44ad;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.76em;
+            margin: 8px 0;
+            text-align: left;
+            color: #3b0d59;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+        
+        .interactive-box {
+            background: #eef2f5;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 5px solid #34495e;
+            margin-top: 10px;
+            text-align: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+        
+        .result {
+            margin-top: 8px;
+            font-weight: bold;
+            color: #4a148c;
+        }
+        
+        .reveal table {
+            font-size: 0.65em;
+            width: 100%;
+            margin: 6px 0;
+        }
+
+        .reveal table th {
+            background-color: #f4f6f7;
+            color: #4a148c;
+            padding: 5px 8px;
+        }
+
+        .reveal table td {
+            padding: 5px 8px;
+        }
+
+        pre {
+            background: #1e1e1e !important;
+            border-radius: 6px !important;
+            padding: 0 !important;
+            margin: 8px 0 !important;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+            width: 100% !important;
+        }
+
+        pre code {
+            background: transparent !important;
+            color: #dcdcdc !important;
+            padding: 10px 14px !important;
+            font-size: 0.72em !important;
+            text-align: left !important;
+            overflow-x: auto !important;
+            white-space: pre !important;
+            font-family: Consolas, Monaco, 'Courier New', monospace !important;
+            display: block !important;
+            tab-size: 4 !important;
+            line-height: 1.35 !important;
+        }
+
+        .reveal .slides section {
+            top: 0 !important;
+            padding: 10px 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .top-banner {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            z-index: 99;
+        }
+        .top-banner a {
+            color: #8e44ad;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-banner">
+        <a href="index.html">🏠 Menu Principal</a> | <a href="modulo-fechamento-material.html">📖 Apostila Fechamento</a>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section style="text-align: center;">
+                <h1 style="font-size: 2.1em; color: #4a148c;">Teoria da Computação</h1>
+                <h2 style="border: none; color: #8e44ad; font-size: 1.25em;">Módulo de Fechamento</h2>
+                <h3 style="font-size: 1.05em; color: #555;">Equivalência entre Funções $\mu$-Recursivas e Máquinas de Turing</h3>
+                <p style="text-align: center; margin-top: 35px; font-size: 0.85em; color: #7f8c8d;">
+                    Prof. Tiago Heineck • IFC<br>
+                    Use as setas [ &rarr; ] ou [ Espaço ] para navegar
+                </p>
+            </section>
+
+            <!-- Slide 2: Tese de Church-Turing -->
+            <section>
+                <h2>A Tese de Church-Turing (1936)</h2>
+                <div class="theory-box" style="text-align: center; padding: 4px 10px; margin: 4px 0;">
+                    $$\begin{array}{ccc}
+                    \textbf{Máquinas de Turing} & \iff & \boldsymbol{\mu}\textbf{-Recursão} \\
+                    & \Updownarrow & \\
+                    & \textbf{Cálculo } \boldsymbol{\lambda} &
+                    \end{array}$$
+                </div>
+                <div class="human-box" style="padding: 6px 12px; margin: 6px 0; font-size: 0.72em;">
+                    🗣️ <strong>Versão Humana (O Grande Encontro da História):</strong><br>
+                    <em>"Não importa se você pensa em computação como uma máquina com fitas (Turing), como substituição de variáveis ($\lambda$) ou como aritmética com laços ($\mu$-recursão). <strong>Todos eles provaram exatamente a mesma fronteira universal do que é computável no universo.</strong>"</em>
+                </div>
+            </section>
+
+            <!-- Slide 3: Forma Normal de Kleene -->
+            <section>
+                <h2>Teorema da Forma Normal de Kleene</h2>
+                <div class="theory-box" style="text-align: center; padding: 6px 12px; margin: 6px 0;">
+                    $$f(\vec{x}) = U\Big(\mu y \big[T(e, \vec{x}, y) = 0\big]\Big)$$
+                </div>
+                <div class="human-box" style="padding: 8px 14px; margin: 6px 0; font-size: 0.74em;">
+                    🗣️ <strong>Versão Humana (O que essa equação revela?):</strong><br>
+                    • $e$: O código-fonte do programa compilado em um número.<br>
+                    • $\mu y [\dots]$: <strong>O ÚNICO laço <code>while</code></strong> externo do programa, que busca o histórico até a parada.<br>
+                    • $T$ e $U$: Funções <strong>Recursivas Primitivas (laços <code>for</code> simples)</strong> que validam a execução e extraem a resposta.<br>
+                    💡 <strong>Conclusão:</strong> Todo software do mundo equivale a <strong>um único laço <code>while</code> externo</strong> envolvendo comandos contados!
+                </div>
+            </section>
+
+            <!-- Slide 4: Mapeamento MT <-> Funções -->
+            <section>
+                <h2>Aritmetização da Máquina de Turing</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Componente da MT</th>
+                            <th>Fórmula Aritmética</th>
+                            <th>Versão Humana (Como entender)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Configuração da MT</td>
+                            <td>$c = 2^q \cdot 3^{w_L} \cdot 5^a \cdot 7^{w_R}$</td>
+                            <td>Guarda o estado e fita inteira em um único número usando primos!</td>
+                        </tr>
+                        <tr>
+                            <td>Passo da MT ($\delta$)</td>
+                            <td>$NextConfig(c)$</td>
+                            <td>Consulta tabela finita de transições &rarr; <strong>Recursiva Primitiva (sem while)</strong>.</td>
+                        </tr>
+                        <tr>
+                            <td>Tempo de Parada</td>
+                            <td>$\mu t [IsHalt(Run(c_0, t)) = 0]$</td>
+                            <td>Um laço <code>while</code> buscando o momento exato em que a MT para.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Slide 5: Hierarquia da Expressividade -->
+            <section>
+                <h2>A Hierarquia da Computabilidade</h2>
+                <div class="theory-box" style="text-align: center; padding: 6px 12px; margin: 6px 0;">
+                    $$\begin{array}{c}
+                    \text{Básicas} + C \;\subset\; \text{PR (for)} \;\subset\; \mu\text{-Totais (Ackermann)} \\
+                    \subset\; \mu\text{-Parciais (Turing)} \;\subset\; \text{Todas as Funções } (\mathbb{N} \to \mathbb{N})
+                    \end{array}$$
+                </div>
+                <div class="human-box" style="padding: 8px 14px; margin: 6px 0; font-size: 0.73em;">
+                    🗣️ <strong>Versão Humana da Escada de Poder:</strong><br>
+                    1. <strong>Básicas + $C$:</strong> Sequências simples de instruções.<br>
+                    2. <strong>Recursão Primitiva (PR):</strong> Laços <code>for</code> contados (100% Total).<br>
+                    3. <strong>$\mu$-Recursivas Totais:</strong> Ackermann (além de qualquer laço <code>for</code>).<br>
+                    4. <strong>$\mu$-Recursivas Parciais:</strong> Poder universal das MTs (permite travar / $\bot$).<br>
+                    5. <strong>Não-Computáveis:</strong> Problemas indecidíveis (ex: Halting Problem).
+                </div>
+            </section>
+
+            <!-- Slide 6: Fechamento do Curso -->
+            <section style="text-align: center;">
+                <h2 style="border: none; color: #8e44ad;">🏁 Fim da Trilha Funcional!</h2>
+                <p style="text-align: center; font-size: 1.0em; margin-top: 20px;">
+                    Você dominou o modelo Funcional desde os blocos atômicos até a Turing-completude universal.
+                </p>
+                <div class="interactive-box" style="margin-top: 25px;">
+                    <p style="font-size: 0.95em;"><strong>Consolide seu conhecimento:</strong></p>
+                    <a href="questoes-enade.html" style="color: #8e44ad; font-weight: bold; font-size: 1.05em; text-decoration: none;">
+                        📝 Acesse o Simulado Estilo ENADE com 10 Questões Comentadas &rarr;
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            transition: 'slide',
+            plugins: [ RevealMath.MathJax3 ]
+        });
+    </script>
+</body>
+</html>

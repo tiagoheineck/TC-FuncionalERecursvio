@@ -3,154 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aula 14 - Paradigma Funcional I</title>
+    <title>Teoria da Computação — Trilha do Paradigma Funcional & Funções Recursivas</title>
+    
+    <!-- Configuração do MathJax -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-            --hover-color: #2980b9;
-            --background: #f4f6f7;
+            --primary-color: #1e2b37;
+            --secondary-color: #2c3e50;
+            --mod1-color: #3498db;
+            --mod2-color: #27ae60;
+            --mod3-color: #e67e22;
+            --mod4-color: #8e44ad;
+            --bg-color: #f4f7f9;
             --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background);
-            color: var(--primary-color);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             min-height: 100vh;
         }
 
+        /* Hero Header */
         header {
+            background: linear-gradient(135deg, #1e2b37 0%, #2c3e50 50%, #34495e 100%);
+            color: white;
+            padding: 3.5rem 1.5rem 3rem 1.5rem;
             text-align: center;
-            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        header .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         header h1 {
             font-size: 2.8rem;
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
+            font-weight: 700;
         }
 
         header p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin: 0;
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #ecf0f1;
+            line-height: 1.5;
+            opacity: 0.95;
         }
 
-        .container {
-            display: flex;
-            gap: 30px;
-            max-width: 900px;
-            width: 90%;
-            flex-wrap: wrap;
-            justify-content: center;
+        .main-container {
+            max-width: 1200px;
+            width: 92%;
+            margin: -30px auto 50px auto;
+            flex: 1;
         }
 
-        .card {
+        /* Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .module-card {
             background-color: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            width: 350px;
-            padding: 40px 30px;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 6px solid var(--primary-color);
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            border-bottom: 5px solid var(--accent-color);
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
         }
 
-        .card-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+        .module-card.m1 { border-top-color: var(--mod1-color); }
+        .module-card.m2 { border-top-color: var(--mod2-color); }
+        .module-card.m3 { border-top-color: var(--mod3-color); }
+        .module-card.m4 { border-top-color: var(--mod4-color); }
+
+        .module-body {
+            padding: 28px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .card h2 {
-            font-size: 1.5rem;
-            margin: 0 0 15px 0;
+        .module-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .m1 .module-tag { color: var(--mod1-color); }
+        .m2 .module-tag { color: var(--mod2-color); }
+        .m3 .module-tag { color: var(--mod3-color); }
+        .m4 .module-tag { color: var(--mod4-color); }
+
+        .module-body h2 {
+            font-size: 1.45rem;
+            margin: 0 0 12px 0;
             color: var(--primary-color);
+            line-height: 1.3;
         }
 
-        .card p {
-            font-size: 1rem;
-            color: #7f8c8d;
+        .module-body p {
+            font-size: 0.95rem;
+            color: #555;
             line-height: 1.5;
+            margin-bottom: 20px;
             flex-grow: 1;
         }
 
-        .btn {
+        .module-topics {
+            background-color: #f9fbfd;
+            border: 1px solid #eef2f5;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: #444;
+            margin-bottom: 22px;
+        }
+
+        .module-topics ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .module-topics li {
+            margin-bottom: 4px;
+        }
+
+        .module-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-primary-m1 { background-color: var(--mod1-color); color: white; }
+        .btn-primary-m1:hover { background-color: #2980b9; }
+
+        .btn-primary-m2 { background-color: var(--mod2-color); color: white; }
+        .btn-primary-m2:hover { background-color: #219150; }
+
+        .btn-primary-m3 { background-color: var(--mod3-color); color: white; }
+        .btn-primary-m3:hover { background-color: #d35400; }
+
+        .btn-primary-m4 { background-color: var(--mod4-color); color: white; }
+        .btn-primary-m4:hover { background-color: #732d91; }
+
+        .btn-secondary {
+            background-color: #f1f4f8;
+            color: var(--secondary-color);
+            border: 1px solid #dbe2ea;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* Banner Extra: Simulado ENADE e Recursos */
+        .extra-banner {
+            background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
+            border-radius: 12px;
+            border: 1px solid #e1e8ed;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+        }
+
+        .extra-info {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .extra-info h3 {
+            font-size: 1.5rem;
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+        }
+
+        .extra-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .extra-btn {
             display: inline-block;
-            margin-top: 25px;
-            padding: 12px 25px;
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
-            border-radius: 25px;
+            padding: 14px 28px;
+            border-radius: 30px;
             font-weight: bold;
-            transition: background-color 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .card:hover .btn {
-            background-color: var(--hover-color);
+        .extra-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
         }
 
-        /* Responsive */
+        footer {
+            background-color: #1a252f;
+            color: #95a5a6;
+            text-align: center;
+            padding: 25px 15px;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #ecf0f1;
+            text-decoration: none;
+        }
+
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .card {
-                width: 100%;
-                max-width: 350px;
-            }
+            header h1 { font-size: 2.1rem; }
+            header p { font-size: 1.05rem; }
+            .extra-banner { flex-direction: column; text-align: center; }
+            .extra-btn { width: 100%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Teoria da Computação</h1>
-        <p>Aula 14 — Paradigma Funcional I</p>
+        <div class="badge">Teoria da Computação • Trilha Funcional</div>
+        <h1>Paradigma Funcional & Funções Recursivas</h1>
+        <p>Do modelo algébrico de Gödel e Kleene à equivalência universal com as Máquinas de Turing e a Tese de Church-Turing.</p>
     </header>
 
-    <div class="container">
-        <!-- Opção 1: Material Interativo -->
-        <a href="material-interativo.html" class="card">
-            <div class="card-icon">📖</div>
-            <h2>Modo Apostila Interativa</h2>
-            <p>Visualização em formato de documento com menu lateral, explicações teóricas detalhadas, simuladores e cronômetro de aula.</p>
-            <div class="btn">Acessar Material</div>
-        </a>
+    <div class="main-container">
 
-        <!-- Opção 2: Slides -->
-        <a href="slides-aula14.html" class="card">
-            <div class="card-icon">📽️</div>
-            <h2>Modo Apresentação (Slides)</h2>
-            <p>Visualização em formato Reveal.js focada para projeção em data show. Tópicos diretos, simuladores embutidos e gabaritos dinâmicos.</p>
-            <div class="btn">Iniciar Slides</div>
-        </a>
+        <!-- Grid de Módulos -->
+        <div class="modules-grid">
 
-        <!-- Opção 3: Questões ENADE -->
-        <a href="questoes-enade.html" class="card">
-            <div class="card-icon">📝</div>
-            <h2>Simulado Estilo ENADE</h2>
-            <p>Página contendo 10 questões de múltipla escolha focadas no Paradigma Funcional, projetadas no formato ENADE, com gabarito e explicação interativa.</p>
-            <div class="btn">Testar Conhecimentos</div>
-        </a>
+            <!-- Módulo 1 -->
+            <div class="module-card m1">
+                <div class="module-body">
+                    <div class="module-tag">Módulo 1 • Fundamentos</div>
+                    <h2>Paradigma Funcional I</h2>
+                    <p>As três Funções Iniciais atômicas ($Z, S, U_i^n$) e o Operador de Composição ($C$). A quebra do paradigma mecanicista para o algébrico.</p>
+                    
+                    <div class="module-topics">
+                        <ul>
+                            <li>Função Zero ($Z$), Sucessor ($S$) e Projeções ($U_i^n$)</li>
+                            <li>Composição e Pipeline de Funções</li>
+                            <li>Limitação da Composição Estática</li>
+                        </ul>
+                    </div>
+
+                    <div class="module-actions">
+                        <a href="material-interativo.html" class="btn-link btn-primary-m1">📖 Apostila Interativa</a>
+                        <a href="slides-aula14.html" class="btn-link btn-secondary">📽️ Slides de Aula</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Módulo 2 -->
+            <div class="module-card m2">
+                <div class="module-body">
+                    <div class="module-tag">Módulo 2 • Repetição Contada</div>
+                    <h2>Paradigma Funcional II</h2>
+                    <p>Recursão Primitiva ($R$) mapeada para laços contados finitos (<code>for</code>). Construção da Adição, Multiplicação, Subtração e Limites de Ackermann.</p>
+                    
+                    <div class="module-topics">
+                        <ul>
+                            <li>Esquema Formal $R(g, h)$ e Acumulador</li>
+                            <li>Totalidade garantida (sem loop infinito)</li>
+                            <li>A Função de Ackermann-Péter</li>
+                        </ul>
+                    </div>
+
+                    <div class="module-actions">
+                        <a href="modulo2-material.html" class="btn-link btn-primary-m2">📖 Apostila Interativa</a>
+                        <a href="modulo2-slides.html" class="btn-link btn-secondary">📽️ Slides de Aula</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Módulo 3 -->
+            <div class="module-card m3">
+                <div class="module-body">
+                    <div class="module-tag">Módulo 3 • Repetição Indeterminada</div>
+                    <h2>Paradigma Funcional III</h2>
+                    <p>Minimização ($\mu$) mapeada para laços indeterminados (<code>while</code>). A transição para funções parciais e o modelo formal de divergência ($\bot$).</p>
+                    
+                    <div class="module-topics">
+                        <ul>
+                            <li>Operador de Minimização Não-Limitada ($\mu$)</li>
+                            <li>Funções Parciais e Loops Infinitos ($\bot$)</li>
+                            <li>Minimização Limitada vs Ilimitada</li>
+                        </ul>
+                    </div>
+
+                    <div class="module-actions">
+                        <a href="modulo3-material.html" class="btn-link btn-primary-m3">📖 Apostila Interativa</a>
+                        <a href="modulo3-slides.html" class="btn-link btn-secondary">📽️ Slides de Aula</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Módulo Fechamento -->
+            <div class="module-card m4">
+                <div class="module-body">
+                    <div class="module-tag">Módulo de Fechamento • Turing-Completude</div>
+                    <h2>Equivalência & MTs</h2>
+                    <p>A unificação definitiva: toda Máquina de Turing equivale a uma Função $\mu$-Recursiva. Tese de Church-Turing e Teorema da Forma Normal de Kleene.</p>
+                    
+                    <div class="module-topics">
+                        <ul>
+                            <li>Aritmetização de Gödel para MTs</li>
+                            <li>Forma Normal de Kleene: $U(\mu y [T(e, x, y)])$</li>
+                            <li>Hierarquia Completa da Computabilidade</li>
+                        </ul>
+                    </div>
+
+                    <div class="module-actions">
+                        <a href="modulo-fechamento-material.html" class="btn-link btn-primary-m4">📖 Apostila Interativa</a>
+                        <a href="modulo-fechamento-slides.html" class="btn-link btn-secondary">📽️ Slides de Aula</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Banner Extra: Simulado ENADE -->
+        <div class="extra-banner">
+            <div class="extra-info">
+                <h3>📝 Banco de Questões & Simulado Estilo ENADE</h3>
+                <p>10 questões desafiadoras de múltipla escolha com gabarito imediato e explicações didáticas detalhadas, cobrindo todos os 4 módulos da trilha.</p>
+            </div>
+            <a href="questoes-enade.html" class="extra-btn">Testar Conhecimentos &rarr;</a>
+        </div>
+
     </div>
+
+    <footer>
+        <p>Teoria da Computação — Instituto Federal Catarinense (IFC) • Prof. Tiago Heineck</p>
+        <p style="margin-top: 5px; font-size: 0.8rem; opacity: 0.7;">Material pedagógico interativo para o ensino de Funções Recursivas e Computabilidade Universal.</p>
+    </footer>
 
 </body>
 </html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 3: Paradigma Funcional III - Minimização (μ) e Laços Indeterminados</title>
+    
+    <!-- Configuração do MathJax para fórmulas LaTeX -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #e67e22;
+            --accent-hover: #d35400;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-border: #ddd;
+            --nav-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background-color: #1e2b37;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .top-navbar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .top-navbar a:hover {
+            color: #e67e22;
+        }
+
+        header {
+            background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
+            color: white;
+            text-align: center;
+            padding: 2.2rem 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.3rem;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 1.15rem;
+            opacity: 0.95;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1250px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        nav {
+            width: 270px;
+            background: var(--nav-bg);
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--light-border);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.03);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            margin-bottom: 8px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            display: block;
+            padding: 10px 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.92rem;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        main {
+            flex: 1;
+            padding: 2.2rem;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .interactive-box {
+            background: #fdf6ec;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .theory-box {
+            background: #fdf8e2;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #f1c40f;
+        }
+
+        .human-box {
+            background: #fdf6ec;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #e67e22;
+            color: #7d3c00;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .alert-box {
+            background: #fdf2f2;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        input[type="number"], input[type="text"], select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        button.btn-action {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            padding: 12px;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px dashed var(--accent-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        th {
+            background-color: #f4f6f7;
+            color: var(--primary-color);
+        }
+
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.95rem;
+        }
+        
+        code {
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+        }
+
+        .gabarito {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                flex-direction: column;
+            }
+            nav {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--light-border);
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Unified Nav -->
+    <div class="top-navbar">
+        <div>
+            <a href="index.html">🏠 Menu Principal</a>
+            <a href="material-interativo.html">1️⃣ Módulo 1 (Básicas & Composição)</a>
+            <a href="modulo2-material.html">2️⃣ Módulo 2 (Recursão Primitiva & For)</a>
+            <a href="modulo3-material.html" style="color: #e67e22; font-weight: bold;">3️⃣ Módulo 3 (Minimização & While)</a>
+            <a href="modulo-fechamento-material.html">🏁 Fechamento & MTs</a>
+        </div>
+        <div>
+            <a href="modulo3-slides.html" target="_blank">📽️ Slides do Módulo 3</a>
+            <a href="questoes-enade.html">📝 Questões ENADE</a>
+        </div>
+    </div>
+
+    <header>
+        <h1>Módulo 3 — Paradigma Funcional III</h1>
+        <p>Minimização ($\mu$) mapeada para Laços Indeterminados (<code>while</code>) e Funções Parciais</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-target="motivo-while">1. Por que precisamos do Laço <code>while</code>?</a></li>
+                <li><a href="#" data-target="operador-mu">2. O Operador de Minimização ($\mu$)</a></li>
+                <li><a href="#" data-target="mapeamento-while">3. Mapeamento: $\mu \leftrightarrow$ Laço <code>while</code></a></li>
+                <li><a href="#" data-target="parciais-totais">4. Funções Parciais vs Totais ($\bot$)</a></li>
+                <li><a href="#" data-target="limitada-vs-ilimitada">5. Minimização Limitada vs Ilimitada</a></li>
+                <li><a href="#" data-target="exemplos-praticos">6. Exemplos: Raiz Inteira e Divisão</a></li>
+                <li><a href="#" data-target="simulador-mu">7. Simulador Interativo do Operador $\mu$</a></li>
+                <li><a href="#" data-target="exercicios-modulo3">8. Exercícios & Desafios</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- 1. Motivação -->
+            <section id="motivo-while" class="active">
+                <h2>1. Por que precisamos do Laço <code>while</code>?</h2>
+                <div class="card">
+                    <h3>O Salto Conceitual além dos Laços Contados</h3>
+                    <p>No <strong>Módulo 2</strong>, vimos que a Recursão Primitiva modela com perfeição laços contados finitos (<code>for</code>), onde o número de iterações é pré-fixado pela entrada $y$.</p>
+                    
+                    <div class="alert-box">
+                        <strong>⚠️ O Problema das Buscas Sem Limite Conhecido a Priori:</strong>
+                        <p>Considere os seguintes problemas clássicos de programação:</p>
+                        <ul>
+                            <li><em>"Encontre o menor número $y$ tal que $y^2 \ge x$."</em></li>
+                            <li><em>"Encontre o menor $y$ tal que o programa $P$ pare após $y$ passos."</em></li>
+                            <li><em>"Busque a próxima raiz de uma equação ou verifique se um número possui uma certa propriedade."</em></li>
+                        </ul>
+                        <p>Quantas iterações serão necessárias? Não sabemos com antecedência! Precisamos de um laço que teste $y = 0, 1, 2, 3, \dots$ <strong>até que uma condição seja satisfeita</strong> (ou execute para sempre se a condição nunca ocorrer).</p>
+                    </div>
+
+                    <div class="theory-box">
+                        <strong>💡 A Grande Sacada de Kleene (1936):</strong>
+                        <p>Para modelar a busca sem limite pré-definido no paradigma funcional, Stephen Kleene introduziu o <strong>Operador de Minimização (ou operador $\mu$)</strong>. Ele é o equivalente matemático exato da estrutura <code>while (condição) { y++; }</code>.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Operador Mu -->
+            <section id="operador-mu">
+                <h2>2. O Operador de Minimização Não-Limitada ($\mu$)</h2>
+                <div class="card">
+                    <p>Dada uma função $g(\vec{x}, y)$, o operador $\mu$ procura o <strong>menor valor natural $y$</strong> que anula a função $g$ (isto é, faz $g(\vec{x}, y) = 0$).</p>
+
+                    <div class="theory-box">
+                        <h3>Definição Formal do Operador $\mu$</h3>
+                        <p>Seja $g: \mathbb{N}^{n+1} \to \mathbb{N}$ uma função (potencialmente parcial). A função $f: \mathbb{N}^n \to \mathbb{N}$ definida por minimização, denotada por:</p>
+                        
+                        $$f(\vec{x}) = \mu y \big[g(\vec{x}, y) = 0\big]$$
+                        
+                        <p>é dada pelo menor valor $y \in \mathbb{N}$ tal que:</p>
+                        <ol>
+                            <li>$g(\vec{x}, y) = 0$;</li>
+                            <li>Para todo $z < y$, o valor $g(\vec{x}, z)$ está definido e $g(\vec{x}, z) \neq 0$.</li>
+                        </ol>
+                        <p>Se não existir tal $y$, ou se para algum $z < y$ a computação de $g(\vec{x}, z)$ não terminar ($\bot$), então $f(\vec{x})$ é <strong>indefinida</strong> ($f(\vec{x}) \uparrow$).</p>
+                    </div>
+
+                    <div class="human-box">
+                        🗣️ <strong>Versão Humana (Como ler e entender a fórmula):</strong><br>
+                        <em>"Comece testando $y = 0$. Se $g(\vec{x}, 0) == 0$, pare e devolva 0. Se não, teste $y = 1$. Se der 0, pare e devolva 1. Continue testando $y = 2, 3, 4, \dots$ em ordem crescente. O <strong>primeiro $y$</strong> que zerar a conta é a resposta. Se nenhum $y$ zerar a conta, a busca nunca termina (loop infinito / $\bot$)."</em>
+                    </div>
+
+                    <div class="interactive-box">
+                        <strong>📌 Notação Alternativa de Predicados:</strong>
+                        <p>Se tivermos um predicado booleano $P(\vec{x}, y)$, escrevemos $\mu y [P(\vec{x}, y)]$, que busca o menor $y$ tal que $P(\vec{x}, y)$ é Verdadeiro (1). Em termos numéricos formais, isso equivale a anular o predicado negado: $\mu y [\overline{\text{sg}}(P(\vec{x}, y)) = 0]$.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Mapeamento While -->
+            <section id="mapeamento-while">
+                <h2>3. O Mapeamento: $\mu \leftrightarrow$ Laço <code>while</code></h2>
+                <div class="card">
+                    <div class="comparison-grid">
+                        <div>
+                            <h4>Paradigma Funcional ($\mu$-Recursivo)</h4>
+                            <pre><code>-- Minimização Não-Limitada:
+f(x) = μ y [ g(x, y) == 0 ]</code></pre>
+                        </div>
+                        <div>
+                            <h4>Paradigma Imperativo (Python / C)</h4>
+                            <pre><code class="language-python">def f(x):
+    y = 0
+    # Laço Indeterminado (while)
+    while g(x, y) != 0:
+        y += 1
+    return y</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="theory-box">
+                        <h3>Diferença Fundamental entre Laço <code>for</code> e Laço <code>while</code></h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Característica</th>
+                                    <th>Recursão Primitiva (Laço <code>for</code>)</th>
+                                    <th>Minimização $\mu$ (Laço <code>while</code>)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Controle de Parada</strong></td>
+                                    <td>Número de iterações pré-determinado ($y$).</td>
+                                    <td>Condição dinâmica de busca ($g(\vec{x}, y) == 0$).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Garantia de Término</strong></td>
+                                    <td>Sempre termina (100% total).</td>
+                                    <td><strong>Pode não terminar</strong> (loop infinito / parcial).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Expressividade</strong></td>
+                                    <td>Subconjunto estrito das funções computáveis.</td>
+                                    <td><strong>Turing-Completa!</strong> (Alcança toda função computável).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Parciais vs Totais -->
+            <section id="parciais-totais">
+                <h2>4. Funções Parciais vs Totais ($\bot$)</h2>
+                <div class="card">
+                    <div class="alert-box">
+                        <h3>A Emergência da Não-Terminação ($\bot$)</h3>
+                        <p>Até o Módulo 2, todas as nossas funções eram estritamente <strong>totais</strong> ($f: \mathbb{N}^k \to \mathbb{N}$). No entanto, computadores reais travam em laços infinitos quando um bug ou condição inalcançável ocorre.</p>
+                        <p>Com o operador $\mu$, a matemática ganha a capacidade de representar formalmente o <strong>loop infinito</strong> através do conceito de <strong>Função Parcial</strong> ($f: \mathbb{N}^k \rightharpoonup \mathbb{N}$):</p>
+                        <ul>
+                            <li>Se a busca por $y$ tem sucesso, dizemos que $f(\vec{x})$ <em>converge</em>: $f(\vec{x}) \downarrow v$.</li>
+                            <li>Se a busca nunca encontra $y$, dizemos que $f(\vec{x})$ <em>diverge</em>: $f(\vec{x}) \uparrow$ (ou $f(\vec{x}) = \bot$, chamado "bottom").</li>
+                        </ul>
+                    </div>
+
+                    <div class="theory-box">
+                        <h4>Exemplo de Divergência Funcional:</h4>
+                        <p>Considere $f(x) = \mu y [y + x + 1 = 0]$.</p>
+                        <p>Como $y, x \ge 0$, a soma $y + x + 1 \ge 1$ para todo $y \in \mathbb{N}$. O valor 0 <strong>nunca será atingido</strong>.</p>
+                        <p>Portanto, a busca incrementa $y = 0, 1, 2, 3, \dots$ indefinidamente. A função $f(x)$ é indefinida ($\bot$) para todo $x$.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Minimização Limitada vs Ilimitada -->
+            <section id="limitada-vs-ilimitada">
+                <h2>5. Minimização Limitada vs Minimização Ilimitada</h2>
+                <div class="card">
+                    <p>É fundamental distinguir dois tipos de minimização na literatura:</p>
+
+                    <div class="comparison-grid">
+                        <div class="theory-box">
+                            <h4>Minimização Limitada ($\mu y \le z$)</h4>
+                            <p>Procura o menor $y \le z$ tal que $P(\vec{x}, y) = 1$. Se nenhum $y \le z$ satisfizer, retorna um valor default (como $z$ ou 0).</p>
+                            <pre><code class="language-python"># Equivale a: for com break
+for y in range(0, z + 1):
+    if P(x, y):
+        return y
+return default</code></pre>
+                            <p><strong>Propriedade:</strong> Preserva a <strong>Recursividade Primitiva</strong>! A função continua sendo total.</p>
+                        </div>
+
+                        <div class="alert-box">
+                            <h4>Minimização Não-Limitada ($\mu y$)</h4>
+                            <p>Procura o menor $y \in \mathbb{N}$ sem qualquer teto superior $z$.</p>
+                            <pre><code class="language-python"># Equivale a: while puro
+y = 0
+while not P(x, y):
+    y += 1
+return y</code></pre>
+                            <p><strong>Propriedade:</strong> Pode divergir ($\bot$). Ultrapassa a barreira da Recursão Primitiva e atinge a <strong>Turing-Completude ($\mu$-Recursão)</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Exemplos Práticos -->
+            <section id="exemplos-praticos">
+                <h2>6. Exemplos Práticos de Construção com $\mu$</h2>
+                <div class="card">
+                    <h3>Exemplo A: Raiz Quadrada Inteira ($\lfloor \sqrt{x} \rfloor$)</h3>
+                    <p>A raiz quadrada inteira de $x$ é o maior natural $y$ tal que $y^2 \le x$, o que equivale a dizer que $(y+1)^2 > x$.</p>
+                    <p>Podemos formulá-la encontrando o menor $y$ tal que $(y+1)^2 > x$, e tomando seu antecessor, ou minimizando diretamente:</p>
+                    $$\text{sqrt\_ceil}(x) = \mu y \big[(y \cdot y \ge x)\big] = \mu y \big[x \dot{-} (y \cdot y) = 0\big]$$
+
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h3>Exemplo B: Divisão Inteira Exata ($div(x, y) = x / y$)</h3>
+                    <p>Para $y > 0$, o quociente exato da divisão de $x$ por $y$ é o número $q$ tal que $q \cdot y = x$.</p>
+                    $$div(x, y) = \mu q \big[|q \cdot y - x| = 0\big]$$
+                    <ul>
+                        <li>Se $x = 12$ e $y = 3$: testa $q=0 (0 \ne 12), q=1 (3 \ne 12), q=2 (6 \ne 12), q=3 (9 \ne 12), q=4 (12 == 12) \implies \text{retorna } 4$.</li>
+                        <li>Se $y = 0$: a equação $q \cdot 0 = x$ nunca é satisfeita (para $x > 0$), resultando em loop infinito $\bot$ — exatamente como a divisão por zero em computadores!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 7. Simulador Mu -->
+            <section id="simulador-mu">
+                <h2>7. Simulador Interativo do Operador de Minimização ($\mu$)</h2>
+                <div class="card">
+                    <p>Veja o laço <code>while</code> do operador $\mu$ executando passo a passo na busca linear por $y = 0, 1, 2, \dots$:</p>
+
+                    <div class="interactive-box">
+                        <label><strong>Problema de Busca:</strong></label>
+                        <select id="mu-problem" onchange="atualizarInterfaceMu()">
+                            <option value="sqrt">Menor y tal que y^2 >= x (Teto da Raiz Quadrada)</option>
+                            <option value="div">Menor y tal que y * divisor == x (Divisão Exata)</option>
+                            <option value="diff">Menor y tal que y + 5 == x (Inverso da Soma)</option>
+                            <option value="diverge">Exemplo de Loop Infinito (y + x + 1 == 0)</option>
+                        </select>
+                        <br><br>
+                        $x =$ <input type="number" id="mu-x" value="25" min="0" style="width: 70px;">
+                        <span id="mu-extra-span" style="display:none;">
+                            Divisor $k =$ <input type="number" id="mu-k" value="5" min="1" style="width: 70px;">
+                        </span>
+                        <button class="btn-action" onclick="executarSimuladorMu()">Executar Busca ($\mu$)</button>
+
+                        <div id="mu-output" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. Exercícios e Desafios -->
+            <section id="exercicios-modulo3">
+                <h2>8. Exercícios & Desafios</h2>
+                <div class="card">
+                    <h3>Questão 1: Totalidade vs Parcialidade com Minimização</h3>
+                    <p>Seja $g(x, y)$ uma função recursiva primitiva total. A função $f(x) = \mu y [g(x, y) = 0]$ é garantidamente total?</p>
+                    <button class="btn-action" onclick="toggleGabarito('gab-m3-1')">Ver Resposta Comentada</button>
+                    <div id="gab-m3-1" class="gabarito">
+                        <p><strong>Resposta: NÃO!</strong></p>
+                        <p>Mesmo que $g(x, y)$ seja total e rápida para calcular em cada ponto, pode não existir nenhum número natural $y$ que faça $g(x, y) = 0$. Nesse caso, o operador $\mu$ incrementará $y$ infinitamente ($y = 0, 1, 2, \dots$), tornando a função $f(x)$ <strong>parcial</strong> (indefinida / $\bot$).</p>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h3>Questão 2: Mapeamento Conceitual para Estruturas de Controle</h3>
+                    <p>Qual a relação entre as funções Básicas + Composição, a Recursão Primitiva e o Operador $\mu$ com as estruturas de controle de linguagens de programação?</p>
+                    <button class="btn-action" onclick="toggleGabarito('gab-m3-2')">Ver Resposta Comentada</button>
+                    <div id="gab-m3-2" class="gabarito">
+                        <p><strong>Mapeamento Canônico:</strong></p>
+                        <ul>
+                            <li><strong>Composição ($C$):</strong> Encadeamento sequencial de comandos / pipelines de funções (<code>g(h(x))</code>).</li>
+                            <li><strong>Recursão Primitiva ($R$):</strong> Laços contados finitos (<code>for (int i=0; i&lt;N; i++)</code>) com garantia de término.</li>
+                            <li><strong>Minimização ($\mu$):</strong> Laços indeterminados com teste de parada dinâmico (<code>while (!condition) y++;</code>), permitindo expressividade Turing-completa e introduzindo potenciais loops infinitos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navegação por abas laterais
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('main section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+
+                link.classList.add('active');
+                const target = link.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+                
+                if (window.MathJax) {
+                    MathJax.typesetPromise();
+                }
+            });
+        });
+
+        function toggleGabarito(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise();
+            }
+        }
+
+        function atualizarInterfaceMu() {
+            const prob = document.getElementById('mu-problem').value;
+            const extra = document.getElementById('mu-extra-span');
+            if (prob === 'div') {
+                extra.style.display = 'inline';
+            } else {
+                extra.style.display = 'none';
+            }
+        }
+
+        function executarSimuladorMu() {
+            const prob = document.getElementById('mu-problem').value;
+            const x = parseInt(document.getElementById('mu-x').value) || 0;
+            const k = parseInt(document.getElementById('mu-k').value) || 1;
+            const out = document.getElementById('mu-output');
+
+            let html = `<h4>Rastreio da Busca Linear (Simulando Laço <code>while</code>):</h4>`;
+            html += `<table><thead><tr><th>Testando $y$</th><th>Expressão Avaliada $g(x, y)$</th><th>Condição $g == 0$?</th><th>Ação</th></tr></thead><tbody>`;
+
+            const MAX_STEPS = 30;
+            let found = false;
+            let resY = -1;
+
+            for (let y = 0; y <= MAX_STEPS; y++) {
+                let gVal = 0;
+                let exprStr = '';
+
+                if (prob === 'sqrt') {
+                    gVal = Math.max(0, x - y * y);
+                    exprStr = `$x \\dot{-} y^2 = ${x} \\dot{-} ${y*y} = ${gVal}$`;
+                } else if (prob === 'div') {
+                    gVal = Math.abs(y * k - x);
+                    exprStr = `$|y \\cdot k - x| = |${y} \\cdot ${k} - ${x}| = ${gVal}$`;
+                } else if (prob === 'diff') {
+                    gVal = Math.abs(y + 5 - x);
+                    exprStr = `$|y + 5 - x| = |${y} + 5 - ${x}| = ${gVal}$`;
+                } else if (prob === 'diverge') {
+                    gVal = y + x + 1;
+                    exprStr = `$y + x + 1 = ${y} + ${x} + 1 = ${gVal}$`;
+                }
+
+                let isZero = (gVal === 0);
+                if (isZero) {
+                    html += `<tr style="background: #e8f5e9;"><td><strong>$y = ${y}$</strong></td><td>${exprStr}</td><td><strong style="color:green;">SIM (0)</strong></td><td><strong>PARADA! Retorna $y=${y}$</strong></td></tr>`;
+                    found = true;
+                    resY = y;
+                    break;
+                } else {
+                    html += `<tr><td>$y = ${y}$</td><td>${exprStr}</td><td style="color:#c0392b;">NÃO (${gVal})</td><td>Incrementa $y \\to ${y+1}$</td></tr>`;
+                }
+            }
+
+            html += `</tbody></table>`;
+
+            if (found) {
+                html += `<div class="result" style="color: #27ae60;">✅ Busca finalizada com sucesso! $\\mu y [g(x, y) = 0] = ${resY}$</div>`;
+            } else {
+                html += `<div class="result" style="color: #c0392b; border-color: #c0392b;">⚠️ Limite de segurança de ${MAX_STEPS} passos atingido. A computação diverge (Loop Infinito / $\\bot$).</div>`;
+            }
+
+            out.innerHTML = html;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+    </script>
+</body>
+</html>

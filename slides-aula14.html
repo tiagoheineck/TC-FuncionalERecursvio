@@ -90,6 +90,32 @@
             border-radius: 8px;
         }
 
+        .human-box {
+            background: #e8f4fd;
+            border-left: 5px solid #2980b9;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            margin: 12px 0;
+            text-align: left;
+            color: #1a365d;
+        }
+        
+        .code-box, pre code {
+            background: #1e1e1e !important;
+            color: #dcdcdc !important;
+            padding: 12px !important;
+            border-radius: 6px !important;
+            font-size: 0.75em !important;
+            text-align: left !important;
+            overflow-x: auto !important;
+            white-space: pre !important;
+            font-family: Consolas, Monaco, 'Courier New', monospace !important;
+            display: block !important;
+            tab-size: 4 !important;
+            line-height: 1.4 !important;
+        }
+
         .highlight {
             background-color: #e1f5fe;
             padding: 2px 6px;
@@ -111,6 +137,11 @@
     <!-- Slide Timer Widget -->
     <div id="slide-timer" style="position: fixed; top: 10px; right: 20px; background-color: #2c3e50; color: white; padding: 10px 20px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; display: none; transition: background-color 0.3s; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
         ⏱️ <span id="slide-timer-current">00:00</span> / <span id="slide-timer-total">10:00</span>
+    </div>
+
+    <div style="position: fixed; top: 10px; left: 20px; font-size: 0.8rem; color: #7f8c8d; z-index: 999; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <a href="index.html" style="color: #3498db; text-decoration: none; font-weight: bold;">🏠 Menu Principal</a> | 
+        <a href="material-interativo.html" style="color: #3498db; text-decoration: none; font-weight: bold;">📖 Apostila Módulo 1</a>
     </div>
 
     <div class="reveal">
@@ -221,9 +252,14 @@
 
             <section data-category="funcoes-basicas">
                 <h2>A. Função Zero ($Z$)</h2>
-                <p>O conceito de "Nulo" é vital para ancorar a matemática. A função Zero atua como um buraco negro: destrói a informação de entrada e retorna o axioma 0.</p>
-                <div style="text-align: center; font-size: 1.5em; margin: 30px 0; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <p>O conceito de "Nulo" é vital para ancorar a matemática. A função Zero destrói a informação de entrada e retorna o número 0.</p>
+                <div style="text-align: center; font-size: 1.4em; margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                     $$Z(x) = 0, \quad \forall x \in \mathbb{N}$$
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler e entender):</strong><br>
+                    <em>"Não importa qual número entrar em $x$, jogue fora e retorne sempre $0$."</em><br>
+                    Exemplos: $Z(5) = 0$, $Z(999) = 0$, $Z(0) = 0$.
                 </div>
             </section>
 
@@ -239,9 +275,14 @@
 
             <section data-category="funcoes-basicas">
                 <h2>B. Função Sucessor ($S$)</h2>
-                <p>Inspirada nos Axiomas de Peano. É o motor da computação. Ela nos permite sair do Zero e gerar qualquer número natural através da aplicação do "passo seguinte".</p>
-                <div style="text-align: center; font-size: 1.5em; margin: 30px 0; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <p>Inspirada nos Axiomas de Peano. É o motor da computação: permite sair do Zero e gerar qualquer natural somando 1.</p>
+                <div style="text-align: center; font-size: 1.4em; margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                     $$S(x) = x + 1, \quad \forall x \in \mathbb{N}$$
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler e entender):</strong><br>
+                    <em>"Pegue o número $x$ e dê exatamente um passo à frente (some 1)."</em><br>
+                    Exemplos: $S(0) = 1$, $S(5) = 6$, $S(S(0)) = 2$.
                 </div>
             </section>
 
@@ -257,9 +298,14 @@
 
             <section data-category="funcoes-basicas">
                 <h2>C. Função Projeção ($U_i^n$)</h2>
-                <p>Quando temos muitas variáveis (uma tupla de $n$ elementos), precisamos rotear dados. A Projeção ignora o que não importa e extrai o elemento exato da posição $i$.</p>
-                <div style="text-align: center; font-size: 1.5em; margin: 30px 0; background: #f8f9fa; padding: 20px; border-radius: 8px;">
-                    $$U_i^n(x_1, \dots, x_n) = x_i$$
+                <p>Quando temos uma tupla de $n$ entradas, a Projeção escolhe apenas o elemento da posição $i$.</p>
+                <div style="text-align: center; font-size: 1.4em; margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    $$U_i^n(x_1, \dots, x_n) = x_i \quad (1 \le i \le n)$$
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler e entender):</strong><br>
+                    <em>"De uma lista com $n$ argumentos, pegue apenas o $i$-ésimo e descarte todo o resto."</em><br>
+                    Exemplos: $U_1^3(10, 20, 30) = 10$, &nbsp; $U_2^3(10, 20, 30) = 20$, &nbsp; $U_1^1(x) = x$.
                 </div>
             </section>
 
@@ -338,13 +384,16 @@
             </section>
 
             <section data-category="composicao">
-                <h2>A Definição Formal</h2>
-                <p style="font-size: 0.85em; margin-bottom: 5px;">A composição de $g$ com $h$ gera a função $f = C(g; h_1, \dots, h_k)$:</p>
-                <div style="background: #f8f9fa; padding: 10px; text-align: center; border: 1px solid #ccc; font-size: 0.85em; border-radius: 8px;">
-                    $$f(x_1, \dots, x_m) = g\Big( h_1(x_1, \dots, x_m), \dots, h_k(x_1, \dots, x_m) \Big)$$
+                <h2>A Definição Formal de Composição</h2>
+                <div style="background: #f8f9fa; padding: 12px; text-align: center; border: 1px solid #ccc; font-size: 0.9em; border-radius: 8px;">
+                    $$f(\vec{x}) = g\Big( h_1(\vec{x}),\, h_2(\vec{x}),\, \dots,\, h_k(\vec{x}) \Big) \implies f = C(g; h_1, \dots, h_k)$$
                 </div>
                 
-                <p style="margin-top: 15px; font-size: 0.85em;"><strong>Como é avaliado:</strong> As entradas $x$ vão paralelamente para todos os $h$. Eles calculam, agrupam os resultados e injetam tudo junto em $g$.</p>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler e entender):</strong><br>
+                    <em>"Primeiro, passe os dados de entrada para a equipe interna de funções ($h_1, \dots, h_k$). Cada uma faz seu cálculo. Depois, pegue as $k$ respostas geradas por elas e passe como parâmetros para a função externa $g$."</em><br>
+                    💡 É o conceito de <strong>Pipeline</strong>: <code>g(h1(x), h2(x))</code>!
+                </div>
             </section>
 
             <!-- ================= EXEMPLOS ================= -->

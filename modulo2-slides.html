@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slides - Módulo 2: Recursão Primitiva & Laços For</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/simple.min.css" id="theme">
+
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: #1e3c72;
+            text-transform: none;
+        }
+        .reveal h2 { font-size: 1.3em; border-bottom: 2px solid #27ae60; padding-bottom: 4px; margin-bottom: 12px;}
+        .reveal h3 { font-size: 1.0em; color: #2c3e50; }
+        
+        .reveal p, .reveal li {
+            font-size: 0.82em;
+            line-height: 1.28;
+            text-align: left;
+        }
+        
+        .reveal ul { margin-bottom: 8px; }
+        .reveal li { margin-bottom: 4px; }
+
+        .theory-box {
+            background: #fff9e6;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            font-size: 0.78em;
+            margin: 10px 0;
+            text-align: left;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+
+        .human-box {
+            background: #eef9f1;
+            border-left: 5px solid #27ae60;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.78em;
+            margin: 10px 0;
+            text-align: left;
+            color: #1e4620;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+        
+        .interactive-box {
+            background: #f4f6f8;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 5px solid #27ae60;
+            margin-top: 10px;
+            text-align: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+        
+        .interactive-box input {
+            font-size: 0.95em;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 70px;
+            text-align: center;
+        }
+        
+        .interactive-box button {
+            font-size: 0.85em;
+            padding: 6px 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        .result {
+            margin-top: 8px;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        
+        .reveal table {
+            font-size: 0.65em;
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .reveal table th {
+            background-color: #f4f6f7;
+            color: #1e3c72;
+            padding: 6px 8px;
+        }
+
+        .reveal table td {
+            padding: 6px 8px;
+        }
+
+        /* Fixed pre and code indentation styles for Reveal.js */
+        pre {
+            background: #1e1e1e !important;
+            border-radius: 6px !important;
+            padding: 0 !important;
+            margin: 8px 0 !important;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+            width: 100% !important;
+        }
+
+        pre code {
+            background: transparent !important;
+            color: #dcdcdc !important;
+            padding: 10px 14px !important;
+            font-size: 0.72em !important;
+            text-align: left !important;
+            overflow-x: auto !important;
+            white-space: pre !important;
+            font-family: Consolas, Monaco, 'Courier New', monospace !important;
+            display: block !important;
+            tab-size: 4 !important;
+            line-height: 1.35 !important;
+        }
+
+        .reveal .slides section {
+            top: 0 !important;
+            padding: 10px 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .top-banner {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            z-index: 99;
+        }
+        .top-banner a {
+            color: #27ae60;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-banner">
+        <a href="index.html">🏠 Menu Principal</a> | <a href="modulo2-material.html">📖 Apostila Módulo 2</a>
+    </div>
+
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Título -->
+            <section style="text-align: center;">
+                <h1 style="font-size: 2.2em; color: #1e3c72;">Teoria da Computação</h1>
+                <h2 style="border: none; color: #27ae60; font-size: 1.3em;">Módulo 2 — Paradigma Funcional II</h2>
+                <h3 style="font-size: 1.1em; color: #555;">Recursão Primitiva ($R$) mapeada para Laços Contados (<code>for</code>)</h3>
+                <p style="text-align: center; margin-top: 35px; font-size: 0.85em; color: #7f8c8d;">
+                    Prof. Tiago Heineck • IFC<br>
+                    Use as setas [ &rarr; ] ou [ Espaço ] para navegar
+                </p>
+            </section>
+
+            <!-- Slide 2: A Limitação da Composição -->
+            <section>
+                <h2>A Limitação Crítica da Composição</h2>
+                <div class="theory-box" style="padding: 6px 12px; margin: 6px 0;">
+                    <strong>⚠️ O Problema da Composição Estática:</strong><br>
+                    Como expressar a função de adição $add(x, y) = x + y$?<br>
+                    Para somar $y$ a $x$, precisamos aplicar o Sucessor $S$ exatamente $y$ vezes:
+                    <div style="text-align: center; margin: 4px 0; font-size: 0.95em;">
+                        $$add(x, y) = S(S(\dots S(x)\dots)) \quad [y \text{ vezes}]$$
+                    </div>
+                    A Composição é <em>estática</em>. Não podemos desenhar uma quantidade de chamadas que dependa da variável $y$!
+                </div>
+                <div class="human-box" style="padding: 6px 12px; margin: 6px 0; font-size: 0.73em;">
+                    🗣️ <strong>Versão Humana (Como entender):</strong><br>
+                    <em>"A composição funciona como um circuito fixo montado na fábrica: para somar 3, precisa de 3 caixas; para somar 100, precisa de 100 caixas. Não dá para mudar o tamanho do circuito no meio da execução sem um comando de laço."</em>
+                </div>
+            </section>
+
+            <!-- Slide 3: Por que g e h? -->
+            <section>
+                <h2>Por que usamos as letras $g$ e $h$?</h2>
+                <div class="theory-box" style="padding: 6px 12px; margin: 6px 0;">
+                    Todo laço <code>for</code> na computação possui <strong>duas responsabilidades distintas</strong>:
+                </div>
+                <div class="human-box" style="padding: 6px 12px; margin: 6px 0; font-size: 0.75em;">
+                    <ul>
+                        <li><strong>$f$: A Função Final</strong> &rarr; O algoritmo que estamos construindo (ex: $add, mult, fact$).</li>
+                        <li><strong>$g$: A Função de BASE ($y=0$)</strong> &rarr; <em>"Qual é o valor inicial do acumulador antes do laço?"</em> (Pense em <strong>G</strong>round/Base).</li>
+                        <li><strong>$h$: A Função de PASSO ($y+1$)</strong> &rarr; <em>"O que fazer a cada volta do laço para avançar um degrau?"</em> (Pense em <strong>H</strong>elper/Passo).</li>
+                    </ul>
+                </div>
+                <p style="text-align: center; font-weight: bold; color: #1e3c72; margin-top: 6px; font-size: 0.85em;">
+                    👉 Notação Formal: $f = R(g, h)$ &nbsp; [onde $g = \text{Base}$ e $h = \text{Passo}$]
+                </p>
+            </section>
+
+            <!-- Slide 4: Esquema Formal de Recursão Primitiva -->
+            <section>
+                <h2>Definição Formal da Recursão Primitiva ($R$)</h2>
+                <div class="theory-box">
+                    Sejam $g: \mathbb{N}^n \to \mathbb{N}$ (base) e $h: \mathbb{N}^{n+2} \to \mathbb{N}$ (passo). A função $f = R(g, h)$ é definida por:
+                    $$\begin{cases} 
+                    f(\vec{x}, 0) = g(\vec{x}) & \text{[Caso Base: } y = 0 \text{]} \\
+                    f(\vec{x}, y + 1) = h(\vec{x},\, y,\, f(\vec{x}, y)) & \text{[Passo Recursivo: } y + 1 \text{]}
+                    \end{cases}$$
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler a fórmula):</strong><br>
+                    • <strong>Quando $y = 0$:</strong> não faça laço nenhum, entregue direto a base $g(\vec{x})$.<br>
+                    • <strong>Para dar o passo $y+1$:</strong> pegue a entrada $\vec{x}$, o contador anterior $y$ e o <strong>acumulador ($acc = f(\vec{x}, y)$)</strong>, e calcule o próximo valor com a regra $h$.
+                </div>
+            </section>
+
+            <!-- Slide 5: O Mapeamento com Laço for -->
+            <section>
+                <h2>Mapeamento: $R \leftrightarrow$ Laço <code>for</code></h2>
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <p style="font-weight: bold; margin-bottom: 4px; font-size: 0.82em;">Formalismo Matemático:</p>
+                        <div class="theory-box" style="margin-top:0; padding: 6px 12px;">
+                            $$f(\vec{x}, 0) = g(\vec{x})$$<br>
+                            $$f(\vec{x}, y+1) = h(\vec{x}, y, \text{acc})$$
+                        </div>
+                    </div>
+                    <div style="flex: 1.2;">
+                        <p style="font-weight: bold; margin-bottom: 4px; font-size: 0.82em;">Equivalente Imperativo (Python):</p>
+                        <pre><code class="language-python">def f(x, y):
+    acc = g(x) # Caso Base (y = 0)
+    for i in range(0, y): # y voltas
+        acc = h(x, i, acc)
+    return acc</code></pre>
+                    </div>
+                </div>
+                <div class="human-box">
+                    🛡️ <strong>Garantia de Totalidade:</strong> Como $y$ é um número natural finito fixado antes do início, o laço executa exatamente $y$ passos e <strong>sempre termina</strong>.
+                </div>
+            </section>
+
+            <!-- Slide 6: Construindo a Adição -->
+            <section>
+                <h2>Construção Formal: Adição ($add(x, y) = x + y$)</h2>
+                <div class="theory-box" style="text-align: center; padding: 6px 12px; margin-bottom: 6px;">
+                    $$\begin{cases}
+                    add(x, 0) = U_1^1(x) \\
+                    add(x, y+1) = S\big(U_3^3(x, y, add(x, y))\big)
+                    \end{cases}$$
+                    <div style="margin-top: 4px; font-weight: bold; color: #1e3c72; font-size: 1.05em;">
+                        $$add = R\Big(U_1^1,\, C(S; U_3^3)\Big)$$
+                    </div>
+                </div>
+                <div class="human-box">
+                    🗣️ <strong>Versão Humana (Como ler e entender):</strong><br>
+                    • <strong>Base ($y=0$):</strong> $x + 0 = x$ (capturado pela projeção de identidade $U_1^1$).<br>
+                    • <strong>Passo ($y+1$):</strong> Pegue o resultado acumulado até agora ($acc$, extraído por $U_3^3$) e aplique o Sucessor ($+1$). Repita $y$ vezes!
+                </div>
+            </section>
+
+            <!-- Slide 7: Multiplicação, Predecessor e Subtração -->
+            <section>
+                <h2>Multiplicação, Predecessor e Subtração</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Operação</th>
+                            <th>Fórmula Formal</th>
+                            <th>Versão Humana (Intuição)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Multiplicação</strong><br>$mult(x, y) = x \cdot y$</td>
+                            <td>$R\Big(Z,\, C(add; U_3^3, U_1^3)\Big)$</td>
+                            <td><em>"Comece em 0. A cada volta, some $x$ ao acumulador. Repita $y$ vezes."</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Predecessor</strong><br>$pred(y) = y \dot{-} 1$</td>
+                            <td>$R\Big(0,\, U_1^2\Big)$</td>
+                            <td><em>"Antecessor de 0 é 0. Antecessor de $y+1$ é o próprio $y$."</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Subtração</strong><br>$sub(x, y) = x \dot{-} y$</td>
+                            <td>$R\Big(U_1^1,\, C(pred; U_3^3)\Big)$</td>
+                            <td><em>"Comece em $x$. A cada volta, aplique $pred$ (diminua 1). Repita $y$ vezes."</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Slide 8: Simulador Interativo & O que é Desdobramento -->
+            <section>
+                <h2>Simulador: Desdobramento de Laço</h2>
+                <div class="human-box" style="margin-top: 0; padding: 6px 12px; font-size: 0.74em;">
+                    🔍 <strong>O que é Desdobramento de Laço (Loop Unrolling)?</strong><br>
+                    É a expansão passo a passo de cada iteração da recursão $R(g, h)$, transformando a fórmula em uma sequência linear ($y=0 \to y=1 \dots$) para visualizar a evolução do acumulador ($acc$).
+                </div>
+                <div class="interactive-box" style="margin-top: 6px;">
+                    $x =$ <input type="number" id="s-x" value="4" min="0"> &nbsp;
+                    $y =$ <input type="number" id="s-y" value="3" min="0">
+                    <button onclick="calcSlideAdd()">Desdobrar Laço</button>
+                    <div id="slide-res-add" class="result" style="font-size: 0.78em; margin-top: 8px;"></div>
+                </div>
+                <script>
+                    function calcSlideAdd() {
+                        const x = parseInt(document.getElementById('s-x').value) || 0;
+                        const y = parseInt(document.getElementById('s-y').value) || 0;
+                        let out = `• Base: $add(${x}, 0) = U_1^1(${x}) = ${x}$<br>`;
+                        let cur = x;
+                        for(let i=0; i<y; i++) {
+                            let old = cur;
+                            cur++;
+                            out += `• Iteração ${i+1}: $add(${x}, ${i+1}) = S(${old}) = ${cur}$<br>`;
+                        }
+                        out += `<strong style="color:#27ae60;">Resultado Final: ${cur}</strong>`;
+                        const target = document.getElementById('slide-res-add');
+                        target.innerHTML = out;
+                        if(window.MathJax) MathJax.typesetPromise();
+                    }
+                </script>
+            </section>
+
+            <!-- Slide 9: Limites e Função de Ackermann -->
+            <section>
+                <h2>Limites: A Função de Ackermann</h2>
+                <div class="theory-box" style="padding: 6px 12px; margin: 6px 0;">
+                    $$\begin{cases}
+                    A(0, n) = n + 1 \\
+                    A(m + 1, 0) = A(m, 1) \\
+                    A(m + 1, n + 1) = A\big(m,\, A(m + 1, n)\big)
+                    \end{cases}$$
+                </div>
+                <div class="human-box" style="font-size: 0.74em; padding: 6px 12px; margin: 6px 0;">
+                    🗣️ <strong>Versão Humana (O Monstro de Ackermann):</strong><br>
+                    • $m=0 \implies +1$; $m=1 \implies +2$; $m=2 \implies 2n$; $m=3 \implies 2^n$; $m=4 \implies \text{Torres de Potências } (2^{2^{\dots}})$.<br>
+                    • A função chama a si mesma <strong>dentro do próprio argumento</strong>. Ela cresce tão rápido que <strong>nenhum laço <code>for</code> pré-calculado consegue computá-la</strong>!<br>
+                    👉 Para a computação geral, precisamos do <code>while</code> $\implies$ <strong>Módulo 3: Minimização ($\mu$)</strong>.
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            transition: 'slide',
+            plugins: [ RevealMath.MathJax3 ]
+        });
+    </script>
+</body>
+</html>
